@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../navbar/NavBar";
 import { GoPlus } from "react-icons/go";
 import { IoPhonePortraitOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,7 @@ const DashLayout = ({url}) => {
   const [contextMenu, setContextMenu] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalUserOpen, setIsModalUserOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [newProjectName, setNewProjectName] = useState("");
 
@@ -94,8 +94,10 @@ const DashLayout = ({url}) => {
         setDropdownVisible(false);
       }
     };
-    handleUserProjects();
-  }, []);
+    if (user){
+      handleUserProjects();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!user) {
@@ -193,6 +195,12 @@ const DashLayout = ({url}) => {
     </div>;
   }
 
+  if (!user) {
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center bg-black bg-opacity-30">
+      <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>;
+  }
+
   return (
     <div
       className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-gray-50 text-gray-900"
@@ -212,10 +220,12 @@ const DashLayout = ({url}) => {
             <FaSearch className="text-gray-500 text-sm" />
           </div>
           {/* User Menu */}
-          <div className="flex items-center gap-2 cursor-pointer">
+          <div className="flex items-center gap-2 cursor-pointer"
+          onClick={() => setIsModalUserOpen(true)}
+          >
             <MdAccountCircle className="text-3xl" />
             <p className="text-sm items-center gap-1 hidden sm:flex">
-              {user.username} <FaChevronDown />
+            {user ? user.username : "Loading..."} <FaChevronDown />
             </p>
           </div>
           <FaBars className="text-3xl sm:hidden block" />
@@ -377,6 +387,21 @@ const DashLayout = ({url}) => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {isModalUserOpen && (
+        <div className="absolute top-[12vh] right-2 z-50 bg-white shadow-md rounded-md p-2"
+        onMouseLeave={() => setIsModalUserOpen(false)}
+        >
+          <button
+            onClick={() => {
+              localStorage.removeItem("user");
+              navigate("/");
+            }}
+            className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
+          >
+            Cerrar Sesión
+          </button>
         </div>
       )}
     </div>
