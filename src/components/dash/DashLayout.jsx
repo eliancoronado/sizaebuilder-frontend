@@ -97,7 +97,7 @@ const DashLayout = ({url}) => {
     if (user){
       handleUserProjects();
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -396,7 +396,7 @@ const DashLayout = ({url}) => {
           <button
             onClick={() => {
               localStorage.removeItem("user");
-              navigate("/");
+              navigate("/login");
             }}
             className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
           >

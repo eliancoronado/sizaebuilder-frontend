@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import logo from "/isologo.png";
+import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import logo from "/isologo.png";
 
-const Register = ({url}) => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
+const Register = ({ url }) => {
+  const { register, handleSubmit, reset } = useForm();
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = { username, email, pass };
+  const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const response = await axios.post(`http://${url}/register`, data, {
         headers: {
@@ -22,27 +19,29 @@ const Register = ({url}) => {
       });
       if (response.data) {
         console.log(response.data);
-        setLoading(false);
-        navigate("/");
         localStorage.setItem("user", JSON.stringify(response.data));
+        navigate("/");
       }
     } catch (error) {
       if (error.response) {
         alert(`Error: ${error.response.data.message}`);
-        setLoading(false);
       } else {
         console.error("Error:", error);
       }
+    } finally {
+      setLoading(false);
+      reset();
     }
   };
+
   return (
     <div className="relative bg-gradient-to-tr from-[#0F0C29] via-[#302B63] to-[#24243E] h-full w-full flex items-center justify-center">
       <div className="w-full max-w-96 h-auto py-6 rounded-xl bg-white backdrop-blur-3xl bg-opacity-20 flex flex-col items-center">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col items-center px-5"
         >
-          <img src={logo} className="w-14" />
+          <img src={logo} className="w-14" alt="Logo" />
           <h3 className="text-2xl font-semibold text-white mt-3">
             Registrate en SIZAE
           </h3>
@@ -52,40 +51,39 @@ const Register = ({url}) => {
           <input
             type="text"
             className="w-full h-9 rounded outline-none pl-2 mt-2 text-base text-black"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+            {...register("username", { required: true })}
           />
           <p className="text-base font-medium text-white self-start mt-5">
             Correo:
           </p>
           <input
-            type="text"
+            type="email"
             className="w-full h-9 rounded outline-none pl-2 mt-2 text-base text-black"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            {...register("email", { required: true })}
           />
           <p className="text-base font-medium text-white self-start mt-3">
             Contraseña:
           </p>
           <input
-            type="text"
+            type="password"
             className="w-full h-9 rounded outline-none pl-2 mt-2 text-base text-black"
-            value={pass}
-            onChange={(e) => {
-              setPass(e.target.value);
-            }}
+            {...register("pass", { required: true })}
           />
           <button
             type="submit"
             className="w-full py-2 rounded-md bg-[#0077FF] text-[#ffffff] text-base font-semibold mt-5"
-            onClick={() => setLoading(true)}
           >
             {loading ? "Registrando..." : "Registrar"}
           </button>
+          <p className="text-sm font-medium text-white self-end mt-4">
+            No tienes una cuenta{" "}
+            <span
+              onClick={() => navigate("/register")}
+              className="text-[#3392ff] cursor-pointer underline"
+            >
+              Registrate
+            </span>
+          </p>
         </form>
       </div>
 
