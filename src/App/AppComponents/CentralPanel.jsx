@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from "react";
 import html2canvas from "html2canvas";
 import axios from "axios";
+import useStore from "../store/store";
 
 const CentralPanel = ({
-  droppedElements,
-  setDroppedElements,
   onUpdate,
   onDownload,
   id,
-  setSelectedPage,
-  project,
-  setProject,
-  imgSelected,
-  url,
   renderElement,
   contextMenu,
   setContextMenu,
 }) => {
   const [color, setColor] = useState("ffffff"); // Estado inicial del color
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPageName, setNewPageName] = useState("");
+
+  const {
+    projectData: project,
+    setProjectData: setProject,
+    imgSelected,
+    setSelectedPage,
+    url,
+    droppedElements, setDroppedElements,
+  } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   useEffect(() => {
     if (imgSelected) {
@@ -128,14 +130,32 @@ const CentralPanel = ({
       }, // Estilos iniciales
     };
 
-    // Agregar el elemento al nivel correcto
-    setDroppedElements((prev) =>
-      parentId === null
-        ? [...prev, newElement] // Añadir al nivel raíz
-        : addChildToParent(prev, parentId, newElement)
-    );
-  };
+    // Asegurarse de que droppedElements sea un array
+    // Accede al estado global de droppedElements
 
+    console.log("Estado antes de actualizar:", droppedElements);
+
+    // Verifica si el estado anterior es un arreglo
+    if (!Array.isArray(droppedElements)) {
+      console.error("El estado anterior no es un array", droppedElements);
+      return;
+    }
+
+    const updatedElements =
+      parentId === null
+        ? [...droppedElements, newElement]
+        : addChildToParent(droppedElements, parentId, newElement);
+
+    console.log("Elementos antes de actualizar:", droppedElements);
+    console.log("Elementos actualizados:", updatedElements);
+
+    // Actualiza el estado global con el nuevo valor
+    if (Array.isArray(updatedElements)) {
+      setDroppedElements(updatedElements);
+    } else {
+      console.error("droppedElements no es un array:", updatedElements);
+    }
+  };
 
   const addChildToParent = (elements, parentId, child) => {
     return elements.map((el) => {
@@ -172,7 +192,14 @@ const CentralPanel = ({
         .filter((el) => el !== null); // Filtrar los elementos eliminados
     };
 
-    setDroppedElements((prev) => deleteElementRecursive(prev));
+
+    // Ejecutar la recursión y actualizar el estado
+    const updatedElements = deleteElementRecursive(droppedElements);
+
+    // Actualizar el estado global con los elementos modificados
+    setDroppedElements(updatedElements);
+
+    // Opcionalmente, cerrar el menú contextual
     setContextMenu(null);
   };
 
@@ -291,15 +318,15 @@ const CentralPanel = ({
             />
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setModalOpen(false) }
+                onClick={() => setModalOpen(false)}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 mr-2"
               >
                 Cancel
               </button>
               <button
                 onClick={(e) => {
-                  addNewPage()
-                  setModalOpen(false)
+                  addNewPage();
+                  setModalOpen(false);
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >

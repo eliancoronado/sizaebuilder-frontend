@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
 import {
   RxText,
   RxSpaceEvenlyHorizontally,
   RxBorderWidth,
 } from "react-icons/rx";
-import axios from "axios";
 import {
   LuAlignLeft,
   LuAlignJustify,
@@ -28,30 +26,30 @@ import {
   TbBoxAlignBottomLeftFilled,
   TbBoxAlignBottomRightFilled,
 } from "react-icons/tb";
+import useStore from "../store/store";
 
 const RightPanel = ({
-  selectedElement,
-  setSelectedElement,
-  setDroppedElements,
   handleStyleChange,
   handleTextChange,
   handlePlaceholderChange,
   handleClassChange,
-  projectId,
-  selectedPage,
-  setSelectedPage,
-  project,
-  setProject,
-  url,
 }) => {
+
+  const {
+    projectData: project,
+    selectedPage,
+    setSelectedPage,
+    selectedElement,
+  } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   const handlePageSelect = (event) => {
     setSelectedPage(event.target.value);
   };
 
-  if (!project) {
-    return <p>Loading...</p>; // Loading state while the project is being fetched
+  if (!project || !project.pages) {
+    return <p>Loading...</p>; // Mostrar mensaje de carga mientras se obtienen los datos
   }
+  
 
   if (!selectedElement) {
     return (
@@ -90,8 +88,8 @@ const RightPanel = ({
           value={selectedPage}
           onChange={handlePageSelect}
         >
-          {project.pages.map((page) => (
-            <option key={page._id} value={page.name}>
+          {project.pages.map((page, index) => (
+            <option key={index} value={page.name}>
               {page.name}
             </option>
           ))}

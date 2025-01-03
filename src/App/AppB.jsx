@@ -10,6 +10,7 @@ import BlocklyComponent from "./blockly/BlocklyComponent";
 import io from "socket.io-client";
 import CentralPart from "./AppComponents/CentralPart";
 import LeftPart from "./AppComponents/LeftPart";
+import useStore from "./store/store";
 
 const socket = io("http://localhost:4000", {
   transports: ["websocket", "polling"],
@@ -20,31 +21,38 @@ socket.on("connect", () => {
   console.log("Conectado a socket io");
 });
 
-const AppB = ({ modeScreen, url }) => {
+const AppB = ({ modeScreen }) => {
   const [loading, setLoading] = useState(false);
-  const [projectData, setProjectData] = useState(null);
   const { id } = useParams();
-  const [selectedPage, setSelectedPage] = useState("index");
-  const [project, setProject] = useState(null);
   const [mode, setMode] = useState("elements");
-  const [blocklyCode, setBlockyCode] = useState(null);
-  const [workspaceState, setWorkspaceState] = useState("");
 
   const {
     handleStyleChange,
     handleTextChange,
     handlePlaceholderChange,
     handleClassChange,
-    droppedElements,
-    selectedElement,
-    setSelectedElement,
-    setDroppedElements,
-    imgSelected,
     renderElement,
     contextMenu,
     setContextMenu,
-    setImgSelected,
   } = useAppManager();
+
+  const {
+    projectData,
+    setProjectData,
+    droppedElements,
+    setDroppedElements,
+    selectedElement,
+    setSelectedElement,
+    imgSelected,
+    setImgSelected,
+    blocklyCode,
+    setBlockyCode,
+    workspaceState,
+    setWorkspaceState,
+    selectedPage,
+    setSelectedPage,
+    url,
+  } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -64,6 +72,7 @@ const AppB = ({ modeScreen, url }) => {
           // Cargar los elementos de la página seleccionada (o la página 'index' si no está seleccionada)
           const elements = selectedPageData.elements || [];
           setDroppedElements(elements); // Actualizar el estado con los elementos de la página
+          console.log("elements: ", selectedPageData.elements);
 
           // Cargar el código y el estado si están disponibles, de lo contrario, mantener el valor actual
           setBlockyCode(selectedPageData.code || null); // Si 'code' no existe, se mantendrá como null
@@ -79,6 +88,7 @@ const AppB = ({ modeScreen, url }) => {
           setBlockyCode(null); // Mantener el valor inicial
           setWorkspaceState("");
         }
+        console.log("Proyecto cargado:", project);
         setLoading(false);
       } catch (error) {
         console.error("Error al obtener el proyecto", error);
@@ -258,50 +268,24 @@ const AppB = ({ modeScreen, url }) => {
           <SidebarB setMode={setMode} />
           {mode === "code" ? (
             <BlocklyComponent
-              elements={droppedElements}
               onGenerateCode={handleGenerateCode}
-              code={workspaceState}
             />
           ) : (
             <div className="w-full h-full grid grid-cols-4">
-              <LeftPanel
-                setMode={setMode}
-                mode={mode}
-                droppedElements={droppedElements}
-                setSelectedElement={setSelectedElement}
-                imgSelected={imgSelected}
-                setImgSelected={setImgSelected}
-                url={url}
-              />
+              <LeftPanel />
               <CentralPanel
-                droppedElements={droppedElements}
-                setDroppedElements={setDroppedElements}
                 onUpdate={handlePreviewAndUpdate}
                 onDownload={handleDownload}
                 id={id}
-                setSelectedPage={setSelectedPage}
-                project={projectData}
-                setProject={setProject}
-                imgSelected={imgSelected}
-                url={url}
                 renderElement={renderElement}
                 contextMenu={contextMenu}
                 setContextMenu={setContextMenu}
               />
               <RightPanel
-                selectedElement={selectedElement}
-                setSelectedElement={setSelectedElement}
-                setDroppedElements={setDroppedElements}
                 handleStyleChange={handleStyleChange}
                 handleTextChange={handleTextChange}
                 handlePlaceholderChange={handlePlaceholderChange}
-                projectId={id}
-                setSelectedPage={setSelectedPage}
-                selectedPage={selectedPage}
-                project={projectData}
-                setProject={setProject}
                 handleClassChange={handleClassChange}
-                url={url}
               />
             </div>
           )}
@@ -310,21 +294,14 @@ const AppB = ({ modeScreen, url }) => {
       {modeScreen === "partLeft" && (
         <LeftPart
           mode={mode}
-          droppedElements={droppedElements}
-          setSelectedElement={setSelectedElement}
-          imgSelected={imgSelected}
-          setImgSelected={setImgSelected}
-          selectedElement={selectedElement}
-          setDroppedElements={setDroppedElements}
           id={id}
-          onUpdate={handlePreviewAndUpdate}
           url={url}
+          renderElement={renderElement}
+          onUpdate={handlePreviewAndUpdate}
         />
       )}
       {modeScreen === "partCentral" && (
         <CentralPart
-          droppedElements={droppedElements}
-          setDroppedElements={setDroppedElements}
           imgSelected={imgSelected}
           modeOfPart="completepart"
           renderElement={renderElement}

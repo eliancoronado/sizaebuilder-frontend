@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
+import useStore from "../store/store";
+import { set } from "date-fns";
 
 const useAppManager = () => {
-  const [selectedElement, setSelectedElement] = useState(null);
-  const [droppedElements, setDroppedElements] = useState([]);
-  const [imgSelected, setImgSelected] = useState("");
-    const [contextMenu, setContextMenu] = useState(null); // Estado para el menú contextual
+  const [contextMenu, setContextMenu] = useState(null); // Estado para el menú contextual
+
+  const {
+    selectedElement,
+    imgSelected,
+    setImgSelected,
+    setSelectedElement,
+    droppedElements,
+    setDroppedElements,
+  } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   const handleStyleChange = (styleName, value) => {
     const updateStylesRecursively = (elements) =>
@@ -23,11 +31,20 @@ const useAppManager = () => {
         }
         return el;
       });
-    setDroppedElements((prevElements) => updateStylesRecursively(prevElements));
-    setSelectedElement((prev) => ({
-      ...prev,
-      styles: { ...prev.styles, [styleName]: value },
-    }));
+    // Actualizamos los elementos con los nuevos estilos
+    const updatedElements = updateStylesRecursively(droppedElements);
+
+    // Actualizamos el estado global con los elementos modificados
+    setDroppedElements(updatedElements);
+
+    // Actualizamos también el estado del selectedElement
+    setSelectedElement({
+      ...selectedElement, // Copia las propiedades anteriores del selectedElement
+      styles: {
+        ...selectedElement.styles, // Mantén los estilos anteriores
+        [styleName]: value, // Agrega o actualiza el estilo específico
+      },
+    });
   };
 
   const handleTextChange = (newText) => {
@@ -47,8 +64,12 @@ const useAppManager = () => {
         }
         return el;
       });
-    setDroppedElements((prevElements) => updateTextRecursively(prevElements));
-    setSelectedElement((prev) => ({ ...prev, text: newText }));
+    const updateTextElement = updateTextRecursively(droppedElements);
+    setDroppedElements(updateTextElement);
+    setSelectedElement({
+      ...selectedElement,
+      text: newText,
+    });
   };
 
   const handlePlaceholderChange = (newPlace) => {
@@ -68,10 +89,13 @@ const useAppManager = () => {
         }
         return el;
       });
-    setDroppedElements((prevElements) =>
-      updatePlaceholderRecursively(prevElements)
-    );
-    setSelectedElement((prev) => ({ ...prev, placeholder: newPlace }));
+    const updatePlaceholderElement =
+      updatePlaceholderRecursively(droppedElements);
+    setDroppedElements(updatePlaceholderElement);
+    setSelectedElement({
+      ...selectedElement,
+      placeholder: newPlace,
+    });
   };
 
   const handleClassChange = (newClass) => {
@@ -91,8 +115,12 @@ const useAppManager = () => {
         }
         return el;
       });
-    setDroppedElements((prevElements) => updateClassRecursively(prevElements));
-    setSelectedElement((prev) => ({ ...prev, iconClass: newClass }));
+    const updateClassElement = updateClassRecursively(droppedElements);
+    setDroppedElements(updateClassElement);
+    setSelectedElement({
+      ...selectedElement,
+      iconClass: newClass,
+    });
   };
 
   // Permitir arrastrar sobre el contenedor

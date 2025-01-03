@@ -5,23 +5,19 @@ import { RxInput } from "react-icons/rx";
 import { FaImage } from "react-icons/fa6";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
-import ElementList from "./elementList";
+import ElementList from "./ElementList";
 import ImageUploader from "./ImageUploader";
 import CentralPart from "./CentralPart";
+import useStore from "../store/store";
 
 const LeftPart = ({
   mode,
-  droppedElements,
-  setSelectedElement,
-  imgSelected,
-  setImgSelected,
-  selectedElement,
-  setDroppedElements,
   id,
   onUpdate,
-  url,
+  renderElement,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { droppedElements, setDroppedElements, setSelectedElement, imgSelected, setImgSelected, selectedElement, url } = useStore();
 
   const navigate = useNavigate();
 
@@ -145,10 +141,9 @@ const LeftPart = ({
             <CentralPart
               selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
-              droppedElements={droppedElements}
-              setDroppedElements={setDroppedElements}
               imgSelected={imgSelected}
               modeOfPart="leftPart"
+              renderElement={renderElement}
             />
           </div>
         </>

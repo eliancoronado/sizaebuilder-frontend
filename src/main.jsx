@@ -15,7 +15,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<App url={URL} />} />
         <Route path="/login" element={<Login url={URL} />} />
         <Route path="/register" element={<Register url={URL} />} />
-        <Route path="/project/:id" element={<AppB modeScreen="complete" url={URL} />} />
+        <Route path="/project/:id" element={<AppB modeScreen="complete" />} />
         <Route path="/project/left/:id" element={<AppB modeScreen="partLeft" />} />
         <Route path="/project/central/:id" element={<AppB modeScreen="partCentral" />} />
       </Routes>

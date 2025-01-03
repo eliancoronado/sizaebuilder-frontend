@@ -2,10 +2,12 @@ import React, { useRef, useEffect } from "react";
 import * as Blockly from "blockly/core";
 import "blockly/blocks"; // Esto incluye los bloques básicos
 import { javascriptGenerator, Order } from "blockly/javascript";
+import useStore from "../store/store";
 
-const BlocklyComponent = ({ elements, onGenerateCode, code }) => {
+const BlocklyComponent = ({ onGenerateCode }) => {
   const blocklyDiv = useRef(null);
   const workspaceRef = useRef(null);
+  const { droppedElements: elements, workspaceState: code } = useStore();
 
   useEffect(() => {
     // Initialize Blockly only once
