@@ -40,6 +40,9 @@ const AppB = ({ modeScreen, url }) => {
     setSelectedElement,
     setDroppedElements,
     imgSelected,
+    renderElement,
+    contextMenu,
+    setContextMenu,
     setImgSelected,
   } = useAppManager();
 
@@ -123,20 +126,28 @@ const AppB = ({ modeScreen, url }) => {
         setSelectedPage(newSelectedPage);
       }
     };
-  
+
     // Escuchar cambios de página seleccionada desde otros dispositivos
     socket.on("selectedPageChanged", handlePageChange);
-  
+
     // Emitir cambio de página localmente
     if (selectedPage) {
       socket.emit("changeSelectedPage", { projectId: id, selectedPage });
     }
-  
+
     return () => {
       socket.off("selectedPageChanged", handlePageChange);
     };
   }, [id, selectedPage]);
-  
+
+  const handlePreviewAndUpdate = async () => {
+    try {
+      await handleUpdateProject();
+      await handlePreview();
+    } catch (error) {
+      console.error("Error durante el proceso:", error);
+    }
+  };
 
   const handleUpdateProject = async () => {
     try {
@@ -263,21 +274,19 @@ const AppB = ({ modeScreen, url }) => {
                 url={url}
               />
               <CentralPanel
-                selectedElement={selectedElement}
-                setSelectedElement={setSelectedElement}
                 droppedElements={droppedElements}
                 setDroppedElements={setDroppedElements}
-                onUpdate={handleUpdateProject}
-                onPreview={handlePreview}
+                onUpdate={handlePreviewAndUpdate}
+                onDownload={handleDownload}
                 id={id}
-                selectedPage={selectedPage}
                 setSelectedPage={setSelectedPage}
                 project={projectData}
                 setProject={setProject}
                 imgSelected={imgSelected}
-                setImgSelected={setImgSelected}
-                onDownload={handleDownload}
                 url={url}
+                renderElement={renderElement}
+                contextMenu={contextMenu}
+                setContextMenu={setContextMenu}
               />
               <RightPanel
                 selectedElement={selectedElement}
@@ -308,18 +317,17 @@ const AppB = ({ modeScreen, url }) => {
           selectedElement={selectedElement}
           setDroppedElements={setDroppedElements}
           id={id}
-          onUpdate={handleUpdateProject}
+          onUpdate={handlePreviewAndUpdate}
           url={url}
         />
       )}
       {modeScreen === "partCentral" && (
         <CentralPart
-          selectedElement={selectedElement}
-          setSelectedElement={setSelectedElement}
           droppedElements={droppedElements}
           setDroppedElements={setDroppedElements}
           imgSelected={imgSelected}
           modeOfPart="completepart"
+          renderElement={renderElement}
         />
       )}
     </div>

@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import html2canvas from "html2canvas";
-import logo from "/isologo.png";
 import axios from "axios";
 
 const CentralPanel = ({
-  selectedElement,
-  setSelectedElement,
   droppedElements,
   setDroppedElements,
   onUpdate,
   onDownload,
-  onPreview,
   id,
-  selectedPage,
   setSelectedPage,
   project,
   setProject,
   imgSelected,
-  setImgSelected,
   url,
+  renderElement,
+  contextMenu,
+  setContextMenu,
 }) => {
   const [color, setColor] = useState("ffffff"); // Estado inicial del color
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
-  const [contextMenu, setContextMenu] = useState(null); // Estado para el menú contextual
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPageName, setNewPageName] = useState("");
 
@@ -157,15 +154,6 @@ const CentralPanel = ({
     });
   };
 
-  const handleElementClick = (element) => {
-    setSelectedElement(element); // Seleccionar el elemento
-  };
-
-  const handleContextMenu = (e, element) => {
-    e.preventDefault();
-    setContextMenu({ x: e.pageX, y: e.pageY, id: element.id });
-  };
-
   const handleDeleteElement = (id) => {
     const deleteElementRecursive = (elements) => {
       return elements
@@ -186,135 +174,6 @@ const CentralPanel = ({
 
     setDroppedElements((prev) => deleteElementRecursive(prev));
     setContextMenu(null);
-  };
-
-  const renderElement = (element) => {
-    switch (element.name) {
-      case "Container":
-        return (
-          <div
-            key={element.id}
-            className={`${
-              selectedElement?.id === element.id ? "border border-blue-500" : ""
-            }`}
-            onDrop={(e) => handleDrop(e, element.id)}
-            onDragOver={handleDragOver}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleElementClick(element);
-            }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-              handleContextMenu(e, element);
-            }}
-            style={element.styles}
-          >
-            {element.text}
-            {element.children.map((child) => renderElement(child))}
-          </div>
-        );
-      case "Button":
-        return (
-          <button
-            key={element.id}
-            type="button"
-            className={`${
-              selectedElement?.id === element.id ? "border border-blue-500" : ""
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleElementClick(element);
-            }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-              handleContextMenu(e, element);
-            }}
-            style={element.styles}
-          >
-            {element.text}
-          </button>
-        );
-      case "Input":
-        return (
-          <input
-            type="text"
-            className={`text-base text-black mb-2${
-              selectedElement?.id === element.id ? "border border-blue-500" : ""
-            }`}
-            placeholder={element.placeholder}
-            key={element.id}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleElementClick(element);
-            }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-              handleContextMenu(e, element);
-            }}
-            style={element.styles}
-          />
-        );
-      case "Text":
-        return (
-          <p
-            key={element.id}
-            className={`text-base text-black border border-black unset-all ${
-              selectedElement?.id === element.id ? "border border-blue-500" : ""
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleElementClick(element);
-            }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-              handleContextMenu(e, element);
-            }}
-            style={element.styles}
-          >
-            {element.text}
-          </p>
-        );
-      case "Icon":
-        return (
-          <i
-            key={element.id}
-            className={`${element.iconClass} ${
-              selectedElement?.id === element.id ? "border border-blue-500" : ""
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleElementClick(element);
-            }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-              handleContextMenu(e, element);
-            }}
-            style={element.styles}
-          ></i>
-        );
-      case "Image":
-        return (
-          <img
-            key={element.id}
-            src={element.src}
-            alt="Placeholder"
-            style={element.styles}
-            className={`w-32 h-32 mb-4 ${
-              selectedElement?.id === element.id ? "border border-blue-500" : ""
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleElementClick(element);
-            }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-              handleContextMenu(e, element);
-            }}
-          />
-        );
-      default:
-        return null;
-    }
   };
 
   function handleSave() {
@@ -342,10 +201,6 @@ const CentralPanel = ({
     });
     onUpdate();
   }
-
-  const handleGeneratePreview = () => {
-    onPreview();
-  };
 
   return (
     //Lo que este aqui deberia estar en un canvas para usar html canvas to png
@@ -376,12 +231,6 @@ const CentralPanel = ({
       </div>
       <div
         className="absolute z-30 bottom-1 right-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
-        onClick={handleGeneratePreview}
-      >
-        Preview
-      </div>
-      <div
-        className="absolute z-30 bottom-14 right-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
         onClick={() => onDownload()}
       >
         Exportar
