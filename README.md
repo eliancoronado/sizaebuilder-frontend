@@ -18,4 +18,4 @@ El objetivo de **Sizae** es permitir a cualquier usuario crear aplicaciones móv
 1. Clona este repositorio a tu máquina local:
 
    ```bash
-   git clone https://github.com/eliancoronado/sizae.git
+   git clone https://github.com/eliancoronado/sizaebuilder-frontend.git
