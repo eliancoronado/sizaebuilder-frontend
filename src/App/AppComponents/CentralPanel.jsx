@@ -15,6 +15,7 @@ const CentralPanel = ({
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPageName, setNewPageName] = useState("");
+  
 
   const {
     projectData: project,

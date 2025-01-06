@@ -13,6 +13,7 @@ import useStore from "../store/store";
 
 const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [draggingElement, setDraggingElement] = useState(null);
   const {
     droppedElements,
     setDroppedElements,
@@ -77,6 +78,10 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
     e.dataTransfer.effectAllowed = "move";
   };
 
+  const handleTouchStart = (e, element) => {
+    setDraggingElement({ id: element.id, name: element.name });
+  };
+
   function handleSave() {
     const saveId = id;
     const divToSave = document.querySelector("#central");
@@ -131,7 +136,7 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
                       className="w-full h-24 flex flex-col gap-2 items-center justify-center text-white text-base border border-[#4F4F4F] cursor-pointer"
                       draggable
                       onDragStart={(e) => handleDragStart(e, element)}
-                      onTouchStart={(e) => handleDragStart(e, element)}
+                      onTouchStart={(e) => handleTouchStart(e, element)}
                     >
                       {element.icon}
                       <p className="text-sm font-extrabold text-[#4F4F4F]">
@@ -154,6 +159,7 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
               imgSelected={imgSelected}
               modeOfPart="leftPart"
               renderElement={renderElement}
+              draggingElement={draggingElement}
             />
           </div>
         </>

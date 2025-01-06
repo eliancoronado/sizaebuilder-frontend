@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useStore from "../store/store";
 
-const CentralPart = ({ modeOfPart, renderElement }) => {
+const CentralPart = ({ modeOfPart, renderElement, draggingElement }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
 
   const { droppedElements, setDroppedElements } = useStore();
@@ -12,11 +12,32 @@ const CentralPart = ({ modeOfPart, renderElement }) => {
     e.stopPropagation();
   };
 
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Evita el comportamiento predeterminado
+    const touch = e.touches[0]; // Obtener la posición del primer toque
+
+    // Detectar el elemento bajo el toque
+    const targetElement = document.elementFromPoint(
+      touch.clientX,
+      touch.clientY
+    );
+
+    if (
+      targetElement &&
+      targetElement.getAttribute("data-drop-target") === "true"
+    ) {
+      // Aquí puedes realizar acciones para indicar que el área es válida
+      console.log("Toque sobre un área válida para soltar");
+    }
+  };
+
   // Manejar la acción de soltar un elemento
   const handleDrop = (e, parentId = null) => {
     e.preventDefault();
     e.stopPropagation();
-    const data = JSON.parse(e.dataTransfer.getData("application/reactflow"));
+    const data = draggingElement
+      ? draggingElement
+      : JSON.parse(e.dataTransfer.getData("application/reactflow"));
 
     // Nuevo elemento a agregar
     const newElement = {
@@ -130,9 +151,10 @@ const CentralPart = ({ modeOfPart, renderElement }) => {
             <div
               className="relative overflow-auto"
               onDrop={(e) => handleDrop(e)}
-              onTouchEnd={(e) => handleDrop(e)}
               onDragOver={handleDragOver}
-              onTouchMove={handleDragOver}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={(e) => handleDrop(e)} // Simular la acción de soltar en táctiles
+              data-drop-target="true" // Atributo personalizado para identificar el área válida
               style={{
                 width: "430px", // Resolución original del iPhone 14 Pro Max
                 height: "932px",
@@ -156,9 +178,10 @@ const CentralPart = ({ modeOfPart, renderElement }) => {
             <div
               className="relative overflow-auto"
               onDrop={(e) => handleDrop(e)}
-              onTouchEnd={(e) => handleDrop(e)}
               onDragOver={handleDragOver}
-              onTouchMove={handleDragOver}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={(e) => handleDrop(e)} // Simular la acción de soltar en táctiles
+              data-drop-target="true" // Atributo personalizado para identificar el área válida
               style={{
                 width: "430px", // Resolución original del iPhone 14 Pro Max
                 height: "932px",
