@@ -93,11 +93,14 @@ const CentralPanel = ({
           ? ""
           : data.name === "Icon"
           ? ""
+          : data.name === "Select"
+          ? ""
           : "texto",
       children: [],
       ...(data.name === "Input" && { placeholder: "Placeholder" }), // Agregar el campo placeholder si es Input
       ...(data.name === "Image" && { src: imgSelected }), // Agregar el campo placeholder si es Input
       ...(data.name === "Icon" && { iconClass: "bx bx-left-arrow-alt" }),
+      ...(data.name === "Input" && { type: "text" }),
       styles: {
         color: "#000000",
         backgroundColor: "#FFFFFF00",
@@ -115,6 +118,12 @@ const CentralPanel = ({
         alignItems: "start", // Valor predeterminado
         justifyContent: "start", // Valor predeterminado
         gap: "",
+        position: "static",
+        top: "0px",
+        bottom: "0px",
+        left: "0px",
+        right: "0px",
+        transform: "",
         marginTop: "0px",
         marginBottom: "16px",
         marginLeft: "0px",
@@ -236,7 +245,7 @@ const CentralPanel = ({
       style={{ backgroundColor: backgroundColor }}
     >
       {/* Input y vista previa del color */}
-      <div className="absolute right-1 top-1 px-3 py-2 rounded flex items-center gap-2 bg-[#767676]">
+      <div className="absolute z-30 right-1 top-1 px-3 py-2 rounded flex items-center gap-2 bg-[#767676]">
         <div
           className="w-5 h-5"
           style={{ backgroundColor: backgroundColor }}

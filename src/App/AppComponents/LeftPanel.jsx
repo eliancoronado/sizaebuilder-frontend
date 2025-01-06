@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaBox, FaRegSquare } from "react-icons/fa";
 import { MdOutlineTextFields, MdOutlineInsertEmoticon } from "react-icons/md";
+import { PiSelectionAllBold, PiSelectionAllDuotone  } from "react-icons/pi";
 import { RxInput } from "react-icons/rx";
 import { FaImage } from "react-icons/fa6";
 import ElementList from "./ElementList";
@@ -21,12 +22,46 @@ const LeftPanel = () => {
   } = useStore();
 
   const elements = [
-    { id: 1, name: "Container", icon: <FaBox className="text-4xl text-[#4F4F4F]" /> },
-    { id: 2, name: "Text", icon: <MdOutlineTextFields className="text-4xl text-[#4F4F4F]" /> },
-    { id: 3, name: "Image", icon: <FaImage className="text-4xl text-[#4F4F4F]" /> },
-    { id: 4, name: "Input", icon: <RxInput className="text-4xl text-[#4F4F4F]" /> },
-    { id: 5, name: "Button", icon: <FaRegSquare className="text-4xl text-[#4F4F4F]" /> },
-    { id: 6, name: "Icon", icon: <MdOutlineInsertEmoticon className="text-4xl text-[#4F4F4F]" /> },
+    {
+      id: 1,
+      name: "Container",
+      icon: <FaBox className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 2,
+      name: "Text",
+      icon: <MdOutlineTextFields className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 3,
+      name: "Image",
+      icon: <FaImage className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 4,
+      name: "Input",
+      icon: <RxInput className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 5,
+      name: "Button",
+      icon: <FaRegSquare className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 6,
+      name: "Icon",
+      icon: <MdOutlineInsertEmoticon className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 7,
+      name: "Select",
+      icon: <PiSelectionAllBold className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 8,
+      name: "Option",
+      icon: <PiSelectionAllDuotone  className="text-4xl text-[#4F4F4F]" />,
+    },
   ];
 
   const filteredElements = elements.filter((element) =>
@@ -68,20 +103,31 @@ const LeftPanel = () => {
                   onDragStart={(e) => handleDragStart(e, element)}
                 >
                   {element.icon}
-                  <p className="text-sm font-extrabold text-[#4F4F4F]">{element.name}</p>
+                  <p className="text-sm font-extrabold text-[#4F4F4F]">
+                    {element.name}
+                  </p>
                 </div>
               ))
             ) : (
-              <p className="text-[#F5F5F5] text-center col-span-3 mt-4">No elements found</p>
+              <p className="text-[#F5F5F5] text-center col-span-3 mt-4">
+                No elements found
+              </p>
             )}
           </div>
         </>
       )}
       {mode === "capas" && (
-        <ElementList elements={droppedElements} setSelectedElement={setSelectedElement} />
+        <ElementList
+          elements={droppedElements}
+          setSelectedElement={setSelectedElement}
+        />
       )}
       {mode === "files" && (
-        <ImageUploader imgSelected={imgSelected} setImgSelected={setImgSelected} url={url} />
+        <ImageUploader
+          imgSelected={imgSelected}
+          setImgSelected={setImgSelected}
+          url={url}
+        />
       )}
     </div>
   );

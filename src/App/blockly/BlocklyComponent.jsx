@@ -3,6 +3,7 @@ import * as Blockly from "blockly/core";
 import "blockly/blocks"; // Esto incluye los bloques básicos
 import { javascriptGenerator, Order } from "blockly/javascript";
 import useStore from "../store/store";
+import { bloques } from "./bloques";
 
 const BlocklyComponent = ({ onGenerateCode }) => {
   const blocklyDiv = useRef(null);
@@ -21,8 +22,13 @@ const BlocklyComponent = ({ onGenerateCode }) => {
               <block type="show_alert"></block>
               <block type="go_to_screen"></block>
               <block type="const_declare"></block>
+              <block type="var_declare"></block>
               <block type="const_use"></block>
+              <block type="var_change"></block>
+              <block type="var_plus"></block>
+              <block type="var_minus"></block>
               <block type="custom_text"></block>
+              <block type="custom_number"></block>
               <block type="dynamic_dropdown_text_content"></block>
               <block type="dynamic_style_change"></block>
               <block type="if_else_block"></block>
@@ -88,205 +94,7 @@ const BlocklyComponent = ({ onGenerateCode }) => {
     });
 
     // Define Blockly blocks
-    Blockly.defineBlocksWithJsonArray([
-      {
-        type: "dynamic_dropdown",
-        message0: "cuando %1 al hacer click hacer %2",
-        args0: [
-          {
-            type: "input_dummy",
-            name: "INPUT",
-          },
-          {
-            type: "input_statement",
-            name: "DO",
-          },
-        ],
-        extensions: ["dynamic_menu_extension"],
-      },
-      {
-        type: "get_text_input_value",
-        message0: "campo %1 valor",
-        args0: [
-          {
-            type: "input_dummy",
-            name: "INPUT",
-            options: [["Seleccionar ID", "default"]], // Opciones iniciales, se actualizan dinámicamente
-          },
-        ],
-        output: null, // Esto permite conectar el bloque a bocas por la izquierda
-        colour: 160, // Color del bloque
-        tooltip: "Obtiene el valor del campo de texto por su ID.",
-        helpUrl: "",
-        extensions: ["dynamic_menu_extension"], // Extensión para obtener los IDs dinámicamente
-      },
-      {
-        type: "equality_block",
-        message0: "%1 = %2", // Representación lineal
-        args0: [
-          {
-            type: "input_value", // Entrada izquierda
-            name: "LEFT",
-            check: null, // Acepta cualquier tipo de dato
-          },
-          {
-            type: "input_value", // Entrada derecha
-            name: "RIGHT",
-            check: null, // Acepta cualquier tipo de dato
-          },
-        ],
-        inputsInline: true, // Esto asegura que el bloque sea horizontal
-        output: "Boolean", // Retorna un valor booleano
-        colour: 230, // Color del bloque
-        tooltip: "Verifica si dos valores son iguales.",
-        helpUrl: "",
-      },
-      {
-        type: "if_else_block",
-        message0: "si %1 entonces %2 si no %3",
-        args0: [
-          {
-            type: "input_value",
-            name: "CONDITION", // Entrada para la condición
-          },
-          {
-            type: "input_statement",
-            name: "IF_BODY", // Cuerpo del `if`
-          },
-          {
-            type: "input_statement",
-            name: "ELSE_BODY", // Cuerpo del `else`
-          },
-        ],
-        previousStatement: null, // Permite conectarse a otros bloques arriba
-        nextStatement: null, // Permite conectarse a otros bloques abajo
-        colour: 210, // Color del bloque
-        tooltip:
-          "Si la condición es verdadera, ejecuta el bloque dentro de 'entonces'. Si no, ejecuta el bloque dentro de 'si no'.",
-        helpUrl: "",
-      },
-      {
-        type: "dynamic_style_change",
-        message0: "A %1 cambiar el estilo %2 a %3",
-        args0: [
-          {
-            type: "input_dummy",
-            name: "INPUT", // Campo para el id del elemento
-          },
-          {
-            type: "input_dummy",
-            name: "STYLE_NAME", // Campo para el nombre del estilo
-          },
-          {
-            type: "input_value",
-            name: "VALUE", // Campo para conectar el valor
-          },
-        ],
-        previousStatement: "Action",
-        extensions: ["dynamic_menu_extension", "dynamic_style_menu"],
-      },
-      {
-        type: "dynamic_dropdown_text_content",
-        message0: "%1 cambiar texto a %2",
-        args0: [
-          {
-            type: "input_dummy", // No conecta nada a la izquierda, solo la selección del ID
-            name: "INPUT",
-          },
-          {
-            type: "input_value", // Conecta un valor a la derecha
-            name: "VALUE",
-            check: "String", // Asegúrate de que sea un valor de tipo String
-          },
-        ],
-        previousStatement: "Action",
-        extensions: ["dynamic_menu_extension"], // Para cargar los elementos dinámicamente
-      },
-      {
-        type: "show_alert",
-        message0: "mostrar alerta con mensaje %1",
-        args0: [
-          {
-            type: "input_value",
-            name: "VALUE",
-          },
-        ],
-        colour: 160,
-        tooltip: "Muestra una alerta con el mensaje proporcionado",
-        helpUrl: "",
-        previousStatement: null, // Permite que no tenga bloques anteriores (no conecta hacia atrás)
-        nextStatement: null, // Permite que se conecten otros bloques después de este
-        inputsInline: true, // Hace que los campos de entrada estén en línea
-      },
-      {
-        type: "custom_text",
-        message0: "%1",
-        args0: [
-          {
-            type: "field_input",
-            name: "TEXT",
-            text: "Escribe algo aquí",
-          },
-        ],
-        output: "String", // Este bloque puede ser usado para conectar con otros bloques como "const_declare" y "show_alert"
-        colour: 160,
-        tooltip: "Un bloque para ingresar texto",
-        helpUrl: "",
-      },
-      {
-        type: "const_declare",
-        message0: "const %1 = %2",
-        args0: [
-          {
-            type: "field_input",
-            name: "VAR",
-            text: "nombreVariable",
-          },
-          {
-            type: "input_value",
-            name: "VALUE",
-          },
-        ],
-        previousStatement: null,
-        nextStatement: null,
-        colour: 230,
-        tooltip: "Declara una constante con un valor.",
-        helpUrl: "",
-      },
-      {
-        type: "go_to_screen",
-        message0: "Ir a la pantalla %1",
-        args0: [
-          {
-            type: "field_input",
-            name: "SCREEN_URL",
-            text: "index", // Valor por defecto
-          },
-        ],
-        colour: 160,
-        tooltip: "Este bloque redirige a la URL especificada.",
-        helpUrl: "",
-        previousStatement: "Action",
-        nextStatement: "Action",
-      },
-      {
-        type: "const_use",
-        message0: "%1",
-        args0: [
-          {
-            type: "field_input",
-            name: "VAR",
-            text: "nombreVariable",
-          },
-        ],
-        previousStatement: null,
-        nextStatement: null,
-        output: "String",
-        colour: 230,
-        tooltip: "Usa una constante declarada previamente.",
-        helpUrl: "",
-      },
-    ]);
+    Blockly.defineBlocksWithJsonArray(bloques);
 
     // Cargar bloques desde JSON
     if (code) {
@@ -376,6 +184,11 @@ const BlocklyComponent = ({ onGenerateCode }) => {
     return [`"${text}"`, Order.ATOMIC]; // Generar el código con el texto entre comillas
   };
 
+  javascriptGenerator.forBlock["custom_number"] = function (block) {
+    const text = block.getFieldValue("TEXT"); // Obtener el texto ingresado
+    return [`${text}`, Order.ATOMIC]; // Generar el código con el texto entre comillas
+  };
+
   javascriptGenerator.forBlock["dynamic_style_change"] = function (block) {
     const elementId = block.getFieldValue("DAY"); // El id seleccionado
     const styleName = block.getFieldValue("STYLE"); // El estilo seleccionado
@@ -405,6 +218,78 @@ const BlocklyComponent = ({ onGenerateCode }) => {
 
     // Si el bloque tiene un valor, se genera el código de la constante
     return `const ${variableName} = ${value};\n`;
+  };
+  javascriptGenerator.forBlock["var_declare"] = function (block) {
+    const variableName = block.getFieldValue("VAR");
+
+    // Obtener el valor del bloque de texto conectado al campo "VALUE"
+    const value = javascriptGenerator.valueToCode(
+      block,
+      "VALUE",
+      Order.ASSIGNMENT
+    );
+
+    // Si el bloque no está conectado o no tiene un valor, usar "undefined"
+    if (!value) {
+      return `var ${variableName} = "";\n`;
+    }
+
+    // Si el bloque tiene un valor, se genera el código de la constante
+    return `var ${variableName} = ${value};\n`;
+  };
+  javascriptGenerator.forBlock["var_change"] = function (block) {
+    const variableName = block.getFieldValue("VAR");
+
+    // Obtener el valor del bloque de texto conectado al campo "VALUE"
+    const value = javascriptGenerator.valueToCode(
+      block,
+      "VALUE",
+      Order.ASSIGNMENT
+    );
+
+    // Si el bloque no está conectado o no tiene un valor, usar "undefined"
+    if (!value) {
+      return `${variableName} = "";\n`;
+    }
+
+    // Si el bloque tiene un valor, se genera el código de la constante
+    return `${variableName} = ${value};\n`;
+  };
+  javascriptGenerator.forBlock["var_plus"] = function (block) {
+    const variableName = block.getFieldValue("VAR");
+
+    // Obtener el valor del bloque de texto conectado al campo "VALUE"
+    const value = javascriptGenerator.valueToCode(
+      block,
+      "VALUE",
+      Order.ASSIGNMENT
+    );
+
+    // Si el bloque no está conectado o no tiene un valor, usar "undefined"
+    if (!value) {
+      return `${variableName} += "";\n`;
+    }
+
+    // Si el bloque tiene un valor, se genera el código de la constante
+    return `${variableName} += ${value};\n`;
+  };
+  javascriptGenerator.forBlock["var_minus"] = function (block) {
+    const variableName = block.getFieldValue("VAR");
+
+    // Obtener el valor del bloque de texto conectado al campo "VALUE"
+    const value = javascriptGenerator.valueToCode(
+      block,
+      "VALUE",
+      Order.ASSIGNMENT
+    );
+
+    // Si el bloque no está conectado o no tiene un valor, usar "undefined"
+    if (!value) {
+      return `${variableName} -= "";\n`;
+    }
+
+    // Si el bloque tiene un valor, se genera el código de la constante
+    return `${variableName} -= ${value};\n`;
   };
 
   javascriptGenerator.forBlock["show_alert"] = function (block) {

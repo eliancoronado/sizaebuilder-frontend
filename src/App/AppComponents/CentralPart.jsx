@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import useStore from "../store/store";
 
-const CentralPart = ({
-  modeOfPart,
-  renderElement,
-}) => {
+const CentralPart = ({ modeOfPart, renderElement }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
 
-  const { droppedElements, setDroppedElements } = useStore()
+  const { droppedElements, setDroppedElements } = useStore();
 
   // Permitir arrastrar sobre el contenedor
   const handleDragOver = (e) => {
@@ -32,6 +29,8 @@ const CentralPart = ({
           ? ""
           : data.name === "Icon"
           ? ""
+          : data.name === "Select"
+          ? ""
           : "texto",
       children: [],
       ...(data.name === "Input" && { placeholder: "Placeholder" }), // Agregar el campo placeholder si es Input
@@ -54,6 +53,12 @@ const CentralPart = ({
         alignItems: "start", // Valor predeterminado
         justifyContent: "start", // Valor predeterminado
         gap: "",
+        position: "static",
+        top: "0px",
+        bottom: "0px",
+        left: "0px",
+        right: "0px",
+        transform: "",
         marginTop: "0px",
         marginBottom: "16px",
         marginLeft: "0px",
@@ -141,27 +146,27 @@ const CentralPart = ({
       )}
       {modeOfPart === "leftPart" && (
         <div
-        className="w-full h-full overflow-hidden col-span-2 relative flex items-center justify-center rounded-md"
-        style={{ backgroundColor: backgroundColor }}
-      >
-        <div className="" style={{ transform: "scale(0.8)" }} id="central">
-          <div
-            className="relative overflow-auto"
-            onDrop={(e) => handleDrop(e)}
-            onDragOver={handleDragOver}
-            style={{
-              width: "430px", // Resolución original del iPhone 14 Pro Max
-              height: "932px",
-              transform: "scale(0.33)",
-              borderRadius: "20px", // Bordes redondeados para simular el aspecto de un teléfono
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)", // Sombra para dar un efecto más realista
-              backgroundColor: "#fff", // Color de fondo blanco
-            }}
-          >
-            {droppedElements.map((element) => renderElement(element))}
+          className="w-full h-full overflow-hidden col-span-2 relative flex items-center justify-center rounded-md"
+          style={{ backgroundColor: backgroundColor }}
+        >
+          <div className="" style={{ transform: "scale(1.1)" }} id="central">
+            <div
+              className="relative overflow-auto"
+              onDrop={(e) => handleDrop(e)}
+              onDragOver={handleDragOver}
+              style={{
+                width: "430px", // Resolución original del iPhone 14 Pro Max
+                height: "932px",
+                transform: "scale(0.33)",
+                borderRadius: "20px", // Bordes redondeados para simular el aspecto de un teléfono
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)", // Sombra para dar un efecto más realista
+                backgroundColor: "#fff", // Color de fondo blanco
+              }}
+            >
+              {droppedElements.map((element) => renderElement(element))}
+            </div>
           </div>
         </div>
-      </div>
       )}
     </>
   );

@@ -24,13 +24,13 @@ socket.on("connect", () => {
 const AppB = ({ modeScreen }) => {
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [mode, setMode] = useState("elements");
 
   const {
     handleStyleChange,
     handleTextChange,
     handlePlaceholderChange,
     handleClassChange,
+    handleTypeInputChange,
     renderElement,
     contextMenu,
     setContextMenu,
@@ -52,6 +52,8 @@ const AppB = ({ modeScreen }) => {
     selectedPage,
     setSelectedPage,
     url,
+    mode,
+    setMode,
   } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   useEffect(() => {
@@ -286,6 +288,7 @@ const AppB = ({ modeScreen }) => {
                 handleTextChange={handleTextChange}
                 handlePlaceholderChange={handlePlaceholderChange}
                 handleClassChange={handleClassChange}
+                handleTypeInputChange={handleTypeInputChange}
               />
             </div>
           )}

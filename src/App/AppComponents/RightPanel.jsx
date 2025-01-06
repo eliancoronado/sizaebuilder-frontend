@@ -26,6 +26,12 @@ import {
   TbBoxAlignBottomLeftFilled,
   TbBoxAlignBottomRightFilled,
 } from "react-icons/tb";
+import {
+  MdBorderTop,
+  MdOutlineBorderBottom,
+  MdBorderLeft,
+  MdBorderRight,
+} from "react-icons/md";
 import useStore from "../store/store";
 
 const RightPanel = ({
@@ -33,8 +39,8 @@ const RightPanel = ({
   handleTextChange,
   handlePlaceholderChange,
   handleClassChange,
+  handleTypeInputChange,
 }) => {
-
   const {
     projectData: project,
     selectedPage,
@@ -49,7 +55,6 @@ const RightPanel = ({
   if (!project || !project.pages) {
     return <p>Loading...</p>; // Mostrar mensaje de carga mientras se obtienen los datos
   }
-  
 
   if (!selectedElement) {
     return (
@@ -119,6 +124,31 @@ const RightPanel = ({
                   value={selectedElement.iconClass}
                   onChange={(e) => handleClassChange(e.target.value)}
                 />
+              </div>
+            )}
+            {selectedElement.type && (
+              <div className="w-full">
+                <h3 className="text-sm text-[#BDBDBD] font-semibold">
+                  Tipo de Input
+                </h3>
+                <select
+                  className="w-full h-8 rounded border border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none mt-2"
+                  value={selectedElement.type}
+                  onChange={(e) => handleTypeInputChange(e.target.value)}
+                >
+                  <option value="text">Texto</option>
+                  <option value="text">Número</option>
+                  <option value="password">Contraseña</option>
+                  <option value="email">Correo</option>
+                  <option value="date">Fecha</option>
+                  <option value="time">Hora</option>
+                  <option value="checkbox">Casilla</option>
+                  <option value="radio">Opcion</option>
+                  <option value="range">Rango</option>
+                  <option value="file">Archivo</option>
+                  <option value="color">Color</option>
+                  <option value="submit">Subir</option>
+                </select>
               </div>
             )}
 
@@ -410,6 +440,100 @@ const RightPanel = ({
                   onChange={(e) => handleStyleChange("gap", e.target.value)}
                 />
               </div>
+            </div>
+
+            <div className="w-full h-auto gap-3 border border-l-0 border-r-0 border-b-0 pt-3 border-[#4F4F4F]">
+              <h3
+                className="text-[#ffffff] text-sm font-medium mt-1"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                Posición
+              </h3>
+            </div>
+
+            <div
+              className={`w-full h-auto grid grid-cols-2 ${
+                selectedElement.styles.position === "absolute"
+                  ? "grid-rows-4"
+                  : "grid-rows-1"
+              }  gap-2`}
+            >
+              <div className="flex flex-col col-span-2">
+                <select
+                  className="w-full h-8 rounded border border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none"
+                  value={selectedElement.styles.position}
+                  onChange={(e) =>
+                    handleStyleChange("position", e.target.value)
+                  }
+                >
+                  <option value="static">Estatica</option>
+                  <option value="absolute">Absoluta</option>
+                  <option value="relative">Relativa</option>
+                  <option value="fixed">Fixed</option>
+                </select>
+              </div>
+              {selectedElement.styles.position === "absolute" && (
+                <>
+                  <div className="w-full grid grid-cols-2 gap-2 col-span-2 row-start-2 h-8">
+                    <div className="gap-2 border border-[#555555] flex items-center h-8 rounded px-2 bg-[#555555] mt-2">
+                      <MdBorderTop className="text-xl text-[#BDBDBD]" />
+                      <input
+                        className="w-full h-8 rounded bg-transparent text-[#E0E0E0] pl-1 outline-none"
+                        value={selectedElement.styles.top}
+                        onChange={(e) =>
+                          handleStyleChange("top", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="gap-2 border border-[#555555] flex items-center h-8 rounded px-2 bg-[#555555] mt-2">
+                      <MdOutlineBorderBottom className="text-xl text-[#BDBDBD]" />
+                      <input
+                        className="w-full h-8 rounded bg-transparent text-[#E0E0E0] pl-1 outline-none"
+                        value={selectedElement.styles.bottom}
+                        onChange={(e) =>
+                          handleStyleChange("bottom", e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full grid grid-cols-2 gap-2 col-span-2 row-start-3 h-8">
+                    <div className="gap-2 border border-[#555555] flex items-center h-8 rounded px-2 bg-[#555555] mt-2">
+                      <MdBorderLeft className="text-xl text-[#BDBDBD]" />
+                      <input
+                        className="w-full h-8 rounded bg-transparent text-[#E0E0E0] pl-1 outline-none"
+                        value={selectedElement.styles.left}
+                        onChange={(e) =>
+                          handleStyleChange("left", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="gap-2 border border-[#555555] flex items-center h-8 rounded px-2 bg-[#555555] mt-2">
+                      <MdBorderRight className="text-xl text-[#BDBDBD]" />
+                      <input
+                        className="w-full h-8 rounded bg-transparent text-[#E0E0E0] pl-1 outline-none"
+                        value={selectedElement.styles.right}
+                        onChange={(e) =>
+                          handleStyleChange("right", e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`mt-2 text-base gap-2 text-[#C3C3C3] h-8 flex items-center justify-center rounded-md col-span-2 row-start-4 cursor-pointer bg-[#555555] ${
+                      selectedElement.styles.transform ===
+                      "translate(-50%, -50%)"
+                        ? "bg-[#2C2C2C] border-[2px] border-[#444444]"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      handleStyleChange("transform", "translate(-50%, -50%)")
+                    }
+                  >
+                    <LuAlignCenterVertical className="text-xl text-[#C3C3C3]" />{" "}
+                    Centrar
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="w-full h-auto gap-3 border border-l-0 border-r-0 border-b-0 pt-3 border-[#4F4F4F]">

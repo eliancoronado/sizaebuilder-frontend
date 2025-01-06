@@ -10,14 +10,17 @@ import ImageUploader from "./ImageUploader";
 import CentralPart from "./CentralPart";
 import useStore from "../store/store";
 
-const LeftPart = ({
-  mode,
-  id,
-  onUpdate,
-  renderElement,
-}) => {
+const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { droppedElements, setDroppedElements, setSelectedElement, imgSelected, setImgSelected, selectedElement, url } = useStore();
+  const {
+    droppedElements,
+    setDroppedElements,
+    setSelectedElement,
+    imgSelected,
+    setImgSelected,
+    selectedElement,
+    url,
+  } = useStore();
 
   const navigate = useNavigate();
 
@@ -52,6 +55,11 @@ const LeftPart = ({
       id: 6,
       name: "Icon",
       icon: <MdOutlineInsertEmoticon className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 7,
+      name: "Select",
+      icon: <PiSelectionAllBold className="text-4xl text-[#4F4F4F]" />,
     },
   ];
 
