@@ -67,6 +67,7 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
         fontSize: "16px",
         fontFamily: "Oswald, sans-serif",
         fontWeight: "400",
+        lineHeight: "1",
         textAlign: "left",
         width: "100%",
         height: "auto",
