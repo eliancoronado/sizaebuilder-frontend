@@ -335,9 +335,9 @@ const useAppManager = () => {
         );
       case "Text":
         return (
-          <p
+          <h3
             key={element.id}
-            className={`text-base text-black border border-black unset-all ${
+            className={`text-base text-black border border-black${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
             onClick={(e) => {
@@ -351,7 +351,7 @@ const useAppManager = () => {
             style={element.styles}
           >
             {element.text}
-          </p>
+          </h3>
         );
       case "Select":
         return (

@@ -23,7 +23,7 @@ body,html,#root{
 }
 
 .unset-all{
-    all: inherit;
+    all: unset;
 }
 
 
