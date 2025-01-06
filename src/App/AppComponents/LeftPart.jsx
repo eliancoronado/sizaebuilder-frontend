@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaChevronDown, FaBox, FaRegSquare } from "react-icons/fa";
 import { MdOutlineTextFields, MdOutlineInsertEmoticon } from "react-icons/md";
+import { PiSelectionAllBold, PiSelectionAllDuotone  } from "react-icons/pi";
 import { RxInput } from "react-icons/rx";
 import { FaImage } from "react-icons/fa6";
 import html2canvas from "html2canvas";
