@@ -160,6 +160,7 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
               modeOfPart="leftPart"
               renderElement={renderElement}
               draggingElement={draggingElement}
+              setDraggingElement={setDraggingElement}
             />
           </div>
         </>

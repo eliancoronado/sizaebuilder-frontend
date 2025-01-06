@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useStore from "../store/store";
 
-const CentralPart = ({ modeOfPart, renderElement, draggingElement }) => {
+const CentralPart = ({ modeOfPart, renderElement, draggingElement, setDraggingElement }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
 
   const { droppedElements, setDroppedElements } = useStore();
@@ -121,6 +121,8 @@ const CentralPart = ({ modeOfPart, renderElement, draggingElement }) => {
     } else {
       console.error("droppedElements no es un array:", updatedElements);
     }
+
+    setDraggingElement(null); // Restablecer el estado
   };
 
   const addChildToParent = (elements, parentId, child) => {
