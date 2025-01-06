@@ -10,9 +10,8 @@
 
 body,html,#root{
     width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
 }
 
 .no-scroll{
