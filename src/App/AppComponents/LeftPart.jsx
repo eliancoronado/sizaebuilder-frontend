@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaChevronDown, FaBox, FaRegSquare } from "react-icons/fa";
 import { MdOutlineTextFields, MdOutlineInsertEmoticon } from "react-icons/md";
-import { PiSelectionAllBold, PiSelectionAllDuotone  } from "react-icons/pi";
+import { PiSelectionAllBold, PiSelectionAllDuotone } from "react-icons/pi";
 import { RxInput } from "react-icons/rx";
 import { FaImage } from "react-icons/fa6";
 import html2canvas from "html2canvas";
@@ -16,7 +16,6 @@ const LeftPart = ({ mode, id, onUpdate }) => {
   const [draggingElement, setDraggingElement] = useState(null);
   const {
     droppedElements,
-    setDroppedElements,
     setSelectedElement,
     imgSelected,
     setImgSelected,
@@ -62,6 +61,11 @@ const LeftPart = ({ mode, id, onUpdate }) => {
       id: 7,
       name: "Select",
       icon: <PiSelectionAllBold className="text-4xl text-[#4F4F4F]" />,
+    },
+    {
+      id: 8,
+      name: "Option",
+      icon: <PiSelectionAllDuotone className="text-4xl text-[#4F4F4F]" />,
     },
   ];
 
