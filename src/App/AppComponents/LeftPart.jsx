@@ -11,7 +11,7 @@ import ImageUploader from "./ImageUploader";
 import CentralPart from "./CentralPart";
 import useStore from "../store/store";
 
-const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
+const LeftPart = ({ mode, id, onUpdate }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [draggingElement, setDraggingElement] = useState(null);
   const {
@@ -158,7 +158,6 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
               setSelectedElement={setSelectedElement}
               imgSelected={imgSelected}
               modeOfPart="leftPart"
-              renderElement={renderElement}
               draggingElement={draggingElement}
               setDraggingElement={setDraggingElement}
             />

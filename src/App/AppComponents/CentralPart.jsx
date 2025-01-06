@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useStore from "../store/store";
 
-const CentralPart = ({ modeOfPart, renderElement, draggingElement, setDraggingElement }) => {
+const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
 
   const { droppedElements, setDroppedElements } = useStore();
@@ -140,6 +140,190 @@ const CentralPart = ({ modeOfPart, renderElement, draggingElement, setDraggingEl
       }
       return el; // Si no coincide, devolver el elemento sin cambios
     });
+  };
+
+  const handleElementClick = (element) => {
+    setSelectedElement(element); // Seleccionar el elemento
+  };
+
+  const handleContextMenu = (e, element) => {
+    e.preventDefault();
+    setContextMenu({ x: e.pageX, y: e.pageY, id: element.id });
+  };
+
+  const renderElement = (element) => {
+    switch (element.name) {
+      case "Container":
+        return (
+          <div
+            key={element.id}
+            className={`${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onDrop={(e) => handleDrop(e, element.id)}
+            onTouchEnd={(e) => handleDrop(e, element.id)} // Simular la acción de soltar en táctiles
+            onDragOver={handleDragOver}
+            onTouchMove={handleTouchMove}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          >
+            {element.text}
+            {element.children.map((child) => renderElement(child))}
+          </div>
+        );
+      case "Button":
+        return (
+          <button
+            key={element.id}
+            type="button"
+            className={`${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          >
+            {element.text}
+          </button>
+        );
+      case "Input":
+        return (
+          <input
+            type={element.type}
+            className={`text-base text-black mb-2${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            placeholder={element.placeholder}
+            key={element.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          />
+        );
+      case "Text":
+        return (
+          <h3
+            key={element.id}
+            className={`text-base text-black border border-black${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          >
+            {element.text}
+          </h3>
+        );
+      case "Select":
+        return (
+          <select
+            key={element.id}
+            className={`text-base text-black border border-black ${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onDrop={(e) => handleDrop(e, element.id)}
+            onTouchEnd={(e) => handleDrop(e, element.id)} // Simular la acción de soltar en táctiles
+            onDragOver={handleDragOver}
+            onTouchMove={handleTouchMove}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          >
+            {element.children.map((child) => renderElement(child))}
+          </select>
+        );
+      case "Option":
+        return (
+          <option
+            key={element.id}
+            className={`text-base text-black border border-black ${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          >
+            {element.text}
+          </option>
+        );
+      case "Icon":
+        return (
+          <i
+            key={element.id}
+            className={`${element.iconClass} ${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+            style={element.styles}
+          ></i>
+        );
+      case "Image":
+        return (
+          <img
+            key={element.id}
+            src={element.src}
+            alt="Placeholder"
+            style={element.styles}
+            className={`w-32 h-32 mb-4 ${
+              selectedElement?.id === element.id ? "border border-blue-500" : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              handleContextMenu(e, element);
+            }}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (

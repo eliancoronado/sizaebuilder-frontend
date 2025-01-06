@@ -299,7 +299,6 @@ const AppB = ({ modeScreen }) => {
           mode={mode}
           id={id}
           url={url}
-          renderElement={renderElement}
           onUpdate={handlePreviewAndUpdate}
         />
       )}
@@ -307,7 +306,6 @@ const AppB = ({ modeScreen }) => {
         <CentralPart
           imgSelected={imgSelected}
           modeOfPart="completepart"
-          renderElement={renderElement}
         />
       )}
     </div>
