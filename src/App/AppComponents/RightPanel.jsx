@@ -269,8 +269,8 @@ const RightPanel = ({
                   value={selectedElement.styles.display}
                   onChange={(e) => handleStyleChange("display", e.target.value)}
                 >
-                  <option value="inline-block">Inline-Block</option>
                   <option value="block">Block</option>
+                  <option value="inline-block">Inline-Block</option>
                   <option value="flex">Flex</option>
                   <option value="grid">Grid</option>
                 </select>

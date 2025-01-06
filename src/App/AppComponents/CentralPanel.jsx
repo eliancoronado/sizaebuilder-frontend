@@ -115,7 +115,7 @@ const CentralPanel = ({
         textAlign: "left",
         width: "100%",
         height: "auto",
-        display: "inline-block",
+        display: "block",
         flexDirection: "",
         alignItems: "start", // Valor predeterminado
         justifyContent: "start", // Valor predeterminado
@@ -293,6 +293,7 @@ const CentralPanel = ({
             borderRadius: "20px", // Bordes redondeados para simular el aspecto de un teléfono
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)", // Sombra para dar un efecto más realista
             backgroundColor: "#fff", // Color de fondo blanco
+            boxSizing: "border-box",
           }}
         >
           {droppedElements.map((element) => renderElement(element))}

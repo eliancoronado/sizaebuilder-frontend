@@ -188,7 +188,7 @@ const useAppManager = () => {
         textAlign: "left",
         width: "100%",
         height: "auto",
-        display: "inline-block",
+        display: "block",
         flexDirection: "",
         alignItems: "start", // Valor predeterminado
         justifyContent: "start", // Valor predeterminado
@@ -337,7 +337,7 @@ const useAppManager = () => {
         return (
           <h3
             key={element.id}
-            className={`text-base text-black border border-black${
+            className={`text-base text-black border border-black leading-none ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
             onClick={(e) => {
