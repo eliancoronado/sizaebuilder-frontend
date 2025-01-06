@@ -111,16 +111,12 @@ const AppB = ({ modeScreen }) => {
       const updatedElements = updatedProject.pages[0].elements || [];
       const updatedCode = updatedProject.pages[0].state || [];
       const updateCodeJs = updatedProject.pages[0].code; // Guardar el código generado
+      setProjectData(updatedProject);
 
       // Solo actualizar si los elementos son diferentes
-      if (JSON.stringify(updatedElements) !== JSON.stringify(droppedElements)) {
-        setDroppedElements(updatedElements);
-        setWorkspaceState(updatedCode);
-        setBlockyCode(updateCodeJs);
-      }
-
-      // Actualizar projectData
-      setProjectData(updatedProject);
+      setDroppedElements(updatedElements);
+      setWorkspaceState(updatedCode);
+      setBlockyCode(updateCodeJs);
     };
 
     // Escuchar el evento de actualización
