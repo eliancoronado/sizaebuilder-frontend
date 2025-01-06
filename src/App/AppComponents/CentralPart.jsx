@@ -130,7 +130,9 @@ const CentralPart = ({ modeOfPart, renderElement }) => {
             <div
               className="relative overflow-auto"
               onDrop={(e) => handleDrop(e)}
+              onTouchEnd={(e) => handleDrop(e)}
               onDragOver={handleDragOver}
+              onTouchMove={handleDragOver}
               style={{
                 width: "430px", // Resolución original del iPhone 14 Pro Max
                 height: "932px",
@@ -154,7 +156,9 @@ const CentralPart = ({ modeOfPart, renderElement }) => {
             <div
               className="relative overflow-auto"
               onDrop={(e) => handleDrop(e)}
+              onTouchEnd={(e) => handleDrop(e)}
               onDragOver={handleDragOver}
+              onTouchMove={handleDragOver}
               style={{
                 width: "430px", // Resolución original del iPhone 14 Pro Max
                 height: "932px",

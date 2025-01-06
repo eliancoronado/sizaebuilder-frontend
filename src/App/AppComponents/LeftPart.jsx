@@ -131,6 +131,7 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
                       className="w-full h-24 flex flex-col gap-2 items-center justify-center text-white text-base border border-[#4F4F4F] cursor-pointer"
                       draggable
                       onDragStart={(e) => handleDragStart(e, element)}
+                      onTouchStart={(e) => handleDragStart(e, element)}
                     >
                       {element.icon}
                       <p className="text-sm font-extrabold text-[#4F4F4F]">
