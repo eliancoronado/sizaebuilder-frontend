@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "blockly": "^11.2.0",
+    "date-fns": "^4.1.0",
     "debounce": "^2.2.0",
     "html2canvas": "^1.4.1",
     "lodash.debounce": "^4.0.8",
