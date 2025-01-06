@@ -36,6 +36,7 @@ const CentralPart = ({ modeOfPart, renderElement }) => {
       ...(data.name === "Input" && { placeholder: "Placeholder" }), // Agregar el campo placeholder si es Input
       ...(data.name === "Image" && { src: imgSelected }), // Agregar el campo placeholder si es Input
       ...(data.name === "Icon" && { iconClass: "bx bx-left-arrow-alt" }),
+      ...(data.name === "Input" && { type: "text" }),
       styles: {
         color: "#000000",
         backgroundColor: "#FFFFFF00",
