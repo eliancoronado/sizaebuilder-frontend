@@ -4,7 +4,7 @@ import useStore from "../store/store";
 const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
 
-  const { droppedElements, setDroppedElements } = useStore();
+  const { droppedElements, setDroppedElements, selectedElement } = useStore();
 
   // Permitir arrastrar sobre el contenedor
   const handleDragOver = (e) => {
