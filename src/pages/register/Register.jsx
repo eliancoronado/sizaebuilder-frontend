@@ -12,7 +12,7 @@ const Register = ({ url }) => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(`http://${url}/register`, data, {
+      const response = await axios.post(`${url}/register`, data, {
         headers: {
           "Content-Type": "application/json",
         },

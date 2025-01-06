@@ -7,7 +7,7 @@ const ImageUploader = ({ imgSelected, setImgSelected, url }) => {
   // Cargar imágenes existentes desde el backend
   const fetchImages = async () => {
     try {
-      const response = await axios.get(`http://${url}/imagesuploaded`);
+      const response = await axios.get(`${url}/imagesuploaded`);
       setUploadedImages(response.data.images); // Suponiendo que devuelve un array de rutas
     } catch (error) {
       console.error("Error al cargar imágenes:", error);
@@ -29,7 +29,7 @@ const ImageUploader = ({ imgSelected, setImgSelected, url }) => {
       const extension = file.name.split(".").pop(); // Obtener la extensión del archivo
 
       try {
-        const response = await axios.post(`http://${url}/upload`, {
+        const response = await axios.post(`${url}/upload`, {
           image: base64Image,
           extension,
         });
@@ -63,11 +63,11 @@ const ImageUploader = ({ imgSelected, setImgSelected, url }) => {
         </h3>
         <div className="w-full grid grid-cols-3 gap-2 p-2 mt-2">
           {uploadedImages.map((image, index) => {
-            const imageSrc = `http://${url}${image}`;
+            const imageSrc = `${url}${image}`;
             return (
               <img
                 key={index}
-                src={`http://${url}${image}`}
+                src={`${url}${image}`}
                 className={`w-full h-20 cursor-pointer object-contain hover:bg-white hover:bg-opacity-35 ${
                   imgSelected === imageSrc ? "bg-blue-500 bg-opacity-35" : ""
                 }`}

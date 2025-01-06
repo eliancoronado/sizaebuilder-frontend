@@ -73,7 +73,7 @@ const DashLayout = ({url}) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://${url}/projects/${user._id}`
+          `${url}/projects/${user._id}`
         );
         if (response.data && Array.isArray(response.data)) {
           setUserProjects(response.data);
@@ -115,7 +115,7 @@ const DashLayout = ({url}) => {
     setLoading(true);
     try {
       const response = await axios.put(
-        `http://${url}/update-project/${projectId}`,
+        `${url}/update-project/${projectId}`,
         { name: newProjectName },
         {
           headers: {
@@ -148,7 +148,7 @@ const DashLayout = ({url}) => {
     setLoading(true);
     try {
       const response = await axios.delete(
-        `http://${url}/delete-project/${projectId}`
+        `${url}/delete-project/${projectId}`
       );
       console.log(response.data);
       setLoading(false);
@@ -166,7 +166,7 @@ const DashLayout = ({url}) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://${url}/new-project`,
+        `${url}/new-project`,
         data,
         {
           headers: {
@@ -278,7 +278,7 @@ const DashLayout = ({url}) => {
                 {/* Card Image */}
                 <div className="h-36 bg-gray-200 flex items-center justify-center overflow-hidden">
                   <img
-                    src={`http://localhost:4000/images/${up._id}.png`}
+                    src={`${url}/images/${up._id}.png`}
                     alt="Preview"
                     className="w-1/2 h-full object-cover scale-125"
                     onError={(e) => {

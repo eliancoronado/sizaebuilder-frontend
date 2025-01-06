@@ -84,7 +84,7 @@ const LeftPart = ({ mode, id, onUpdate, renderElement }) => {
       const imageData = canvas.toDataURL("image/png"); // Convertir el div en base64
 
       // Enviar la imagen y el id al backend
-      fetch(`http://${url}/save-image`, {
+      fetch(`${url}/save-image`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

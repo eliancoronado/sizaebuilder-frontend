@@ -45,7 +45,7 @@ const CentralPanel = ({
       setProject(updatedProject);
 
       // Enviar al backend para actualizar el proyecto
-      await axios.put(`http://${url}/addNewPage/${id}`, {
+      await axios.put(`${url}/addNewPage/${id}`, {
         pages: updatedProject.pages,
       });
 
@@ -220,7 +220,7 @@ const CentralPanel = ({
       const imageData = canvas.toDataURL("image/png"); // Convertir el div en base64
 
       // Enviar la imagen y el id al backend
-      fetch(`http://${url}/save-image`, {
+      fetch(`${url}/save-image`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

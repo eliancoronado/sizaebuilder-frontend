@@ -12,7 +12,7 @@ import CentralPart from "./AppComponents/CentralPart";
 import LeftPart from "./AppComponents/LeftPart";
 import useStore from "./store/store";
 
-const socket = io("http://localhost:4000", {
+const socket = io("https://sizaebuilder-backend.onrender.com", {
   transports: ["websocket", "polling"],
   withCredentials: true,
 });
@@ -60,7 +60,7 @@ const AppB = ({ modeScreen }) => {
     const fetchProject = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://${url}/project/${id}`); // Solicitud GET usando el id
+        const response = await axios.get(`${url}/project/${id}`); // Solicitud GET usando el id
         const project = response.data; // Proyecto completo
 
         setProjectData(project); // Guardar los datos completos del proyecto en el estado
@@ -200,7 +200,7 @@ const AppB = ({ modeScreen }) => {
 
       // Solicitud PUT
       const response = await axios.put(
-        `http://${url}/projects/${id}`,
+        `${url}/projects/${id}`,
         updatedProject
       );
       console.log("Proyecto actualizado:", response.data);
@@ -218,7 +218,7 @@ const AppB = ({ modeScreen }) => {
     }
 
     try {
-      const response = await axios.post(`http://${url}/generate`, {
+      const response = await axios.post(`${url}/generate`, {
         droppedElement: droppedElements,
         selectedPage,
         jscode: blocklyCode,
@@ -240,7 +240,7 @@ const AppB = ({ modeScreen }) => {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(`http://${url}/download-zip/${id}`);
+      const response = await fetch(`${url}/download-zip/${id}`);
 
       if (!response.ok) {
         throw new Error("Error al descargar el archivo");

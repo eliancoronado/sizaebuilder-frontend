@@ -20,7 +20,7 @@ const Login = ({ url }) => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(`http://${url}/login`, data, {
+      const response = await axios.post(`${url}/login`, data, {
         headers: {
           "Content-Type": "application/json",
         },

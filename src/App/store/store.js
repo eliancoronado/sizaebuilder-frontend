@@ -26,7 +26,7 @@ const useStore = create((set) => ({
   selectedPage: "index",
   setSelectedPage: (page) => set({ selectedPage: page }),
 
-  url: 'localhost:4000', // Puedes configurar esto desde el inicio
+  url: 'https://sizaebuilder-backend.onrender.com', // Puedes configurar esto desde el inicio
 }));
 
 export default useStore;
