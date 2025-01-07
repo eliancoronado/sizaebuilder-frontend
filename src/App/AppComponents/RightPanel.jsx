@@ -81,7 +81,7 @@ const RightPanel = ({
   }
 
   return (
-    <div className="w-full h-full col-span-1 bg-[#333333] p-4 no-scroll overflow-y-auto">
+    <div className="w-full h-full col-span-1 bg-[#333333] p-1.5 lg:p-4 no-scroll overflow-y-auto">
       <h2 className="text-[#F5F5F5] text-xl font-medium">Propiedades</h2>
       <h3 className="text-[#BDBDBD] text-lg font-medium mt-4">
         Id: {selectedElement.id}

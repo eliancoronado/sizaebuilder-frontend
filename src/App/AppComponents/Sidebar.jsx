@@ -14,7 +14,7 @@ const SidebarB = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-[80px] h-full bg-[#9A4DFF] flex flex-col items-center py-4 justify-between">
+    <div className="w-[80px] h-full bg-[#9A4DFF] hidden md:flex md:flex-col md:items-center md:py-2 lg:py-4 md:justify-between">
       <div className="w-full flex flex-col items-center">
         <img
           src={logo}

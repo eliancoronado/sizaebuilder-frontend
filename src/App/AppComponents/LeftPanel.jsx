@@ -82,10 +82,10 @@ const LeftPanel = () => {
   };
 
   return (
-    <div className="w-full h-full col-span-1 bg-[#333333] flex flex-col p-4">
+    <div className="w-full h-full col-span-1 bg-[#333333] flex flex-col p-1.5 lg:p-4">
       {mode === "elements" && (
         <>
-          <h2 className="text-[#F5F5F5] text-xl font-medium">
+          <h2 className="text-[#F5F5F5] text-base lg:text-xl font-medium">
             Añadir Elementos
           </h2>
           <div className="w-full h-9 mt-3 rounded-full border border-[#ffffff] overflow-hidden flex items-center">
