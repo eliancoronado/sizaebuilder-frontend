@@ -304,7 +304,7 @@ const CentralPanel = ({
         Guardar
       </div>
 
-      <div className="" style={{ transform: "scale(1.5)" }} id="central">
+      <div className="scale-110 lg:scale-150" id="central">
         <div
           className="relative overflow-auto"
           onDrop={(e) => handleDrop(e)}

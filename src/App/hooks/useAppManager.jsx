@@ -274,6 +274,25 @@ const useAppManager = () => {
     setContextMenu({ x: e.pageX, y: e.pageY, id: element.id });
   };
 
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Evita el comportamiento predeterminado
+    const touch = e.touches[0]; // Obtener la posición del primer toque
+
+    // Detectar el elemento bajo el toque
+    const targetElement = document.elementFromPoint(
+      touch.clientX,
+      touch.clientY
+    );
+
+    if (
+      targetElement &&
+      targetElement.getAttribute("data-drop-target") === "true"
+    ) {
+      // Aquí puedes realizar acciones para indicar que el área es válida
+      console.log("Toque sobre un área válida para soltar");
+    }
+  };
+
   const renderElement = (element) => {
     switch (element.name) {
       case "Container":
