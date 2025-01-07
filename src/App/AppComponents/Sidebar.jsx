@@ -46,14 +46,6 @@ const SidebarB = () => {
           <FaCode className="text-2xl text-[#2D2D2D]" />
         </div>
       </div>
-      <div className="w-full flex flex-col items-center">
-        <div className="w-full py-4 cursor-pointer hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center">
-          <IoHelpCircleOutline className="text-3xl text-[#2D2D2D]" />
-        </div>
-        <div className="w-full py-4 cursor-pointer hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center">
-          <IoSettingsOutline className="text-2xl text-[#2D2D2D]" />
-        </div>
-      </div>
     </div>
   );
 };

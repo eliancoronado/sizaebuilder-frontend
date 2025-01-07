@@ -25,6 +25,8 @@ const CentralPanel = ({
     url,
     droppedElements,
     setDroppedElements,
+    draggingElement,
+    setDraggingElement,
   } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   useEffect(() => {
@@ -78,11 +80,32 @@ const CentralPanel = ({
     e.stopPropagation();
   };
 
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Evita el comportamiento predeterminado
+    const touch = e.touches[0]; // Obtener la posición del primer toque
+
+    // Detectar el elemento bajo el toque
+    const targetElement = document.elementFromPoint(
+      touch.clientX,
+      touch.clientY
+    );
+
+    if (
+      targetElement &&
+      targetElement.getAttribute("data-drop-target") === "true"
+    ) {
+      // Aquí puedes realizar acciones para indicar que el área es válida
+      console.log("Toque sobre un área válida para soltar");
+    }
+  };
+
   // Manejar la acción de soltar un elemento
   const handleDrop = (e, parentId = null) => {
     e.preventDefault();
     e.stopPropagation();
-    const data = JSON.parse(e.dataTransfer.getData("application/reactflow"));
+    const data = draggingElement
+      ? draggingElement
+      : JSON.parse(e.dataTransfer.getData("application/reactflow"));
 
     // Nuevo elemento a agregar
     const newElement = {
@@ -167,6 +190,7 @@ const CentralPanel = ({
     } else {
       console.error("droppedElements no es un array:", updatedElements);
     }
+    setDraggingElement(null); // Restablecer el estado
   };
 
   const addChildToParent = (elements, parentId, child) => {
@@ -265,7 +289,7 @@ const CentralPanel = ({
         className="absolute z-30 top-1 left-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
         onClick={() => setModalOpen(true)}
       >
-        Add Page
+        Añadir Pagina
       </div>
       <div
         className="absolute z-30 bottom-1 right-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
@@ -277,7 +301,7 @@ const CentralPanel = ({
         className="absolute z-30 bottom-1 left-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
         onClick={handleSave}
       >
-        Save
+        Guardar
       </div>
 
       <div className="" style={{ transform: "scale(1.5)" }} id="central">
@@ -286,7 +310,7 @@ const CentralPanel = ({
           onDrop={(e) => handleDrop(e)}
           onTouchEnd={(e) => handleDrop(e)}
           onDragOver={handleDragOver}
-          onTouchMove={handleDragOver}
+          onTouchMove={handleTouchMove}
           style={{
             width: "430px", // Resolución original del iPhone 14 Pro Max
             height: "932px",
@@ -313,29 +337,26 @@ const CentralPanel = ({
           >
             Borrar
           </button>
-          <button className="text-blue-500 hover:bg-blue-100 w-full px-4 py-2 rounded">
-            Funcionalidad
-          </button>
         </div>
       )}
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 shadow-lg w-80">
-            <h2 className="text-xl font-semibold mb-4">New Page Name</h2>
+            <h2 className="text-xl font-semibold mb-4">Nueva Página</h2>
             <input
               type="text"
               value={newPageName}
               onChange={(e) => setNewPageName(e.target.value)}
               className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter new page name"
+              placeholder="Escribe el nombre de la nueva página"
             />
             <div className="flex justify-end mt-4">
               <button
                 onClick={() => setModalOpen(false)}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 mr-2"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 onClick={(e) => {
@@ -344,7 +365,7 @@ const CentralPanel = ({
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
-                Save
+                Crear
               </button>
             </div>
           </div>

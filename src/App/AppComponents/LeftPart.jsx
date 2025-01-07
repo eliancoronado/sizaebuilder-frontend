@@ -13,7 +13,6 @@ import useStore from "../store/store";
 
 const LeftPart = ({ mode, id, onUpdate }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [draggingElement, setDraggingElement] = useState(null);
   const {
     droppedElements,
     setSelectedElement,
@@ -21,6 +20,8 @@ const LeftPart = ({ mode, id, onUpdate }) => {
     setImgSelected,
     selectedElement,
     url,
+    draggingElement,
+    setDraggingElement,
   } = useStore();
 
   const navigate = useNavigate();
@@ -119,18 +120,18 @@ const LeftPart = ({ mode, id, onUpdate }) => {
           <div className="w-full h-1/2">
             <div className="w-full flex items-center justify-between">
               <h2 className="text-[#F5F5F5] text-xl font-medium">
-                Add Element
+                Añadir Elementos
               </h2>
               <div
                 className="bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
                 onClick={handleSave}
               >
-                Save
+                Guardar
               </div>
             </div>
             <div className="w-full h-auto">
               <div className="w-full py-3 mt-1 text-white font-semibold text-base pl-4">
-                Elements
+                Elementos
               </div>
               <div className="w-full h-auto grid grid-cols-3">
                 {filteredElements.length > 0 ? (
@@ -162,8 +163,6 @@ const LeftPart = ({ mode, id, onUpdate }) => {
               setSelectedElement={setSelectedElement}
               imgSelected={imgSelected}
               modeOfPart="leftPart"
-              draggingElement={draggingElement}
-              setDraggingElement={setDraggingElement}
             />
           </div>
         </>

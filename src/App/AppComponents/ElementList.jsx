@@ -49,7 +49,7 @@ const ElementTree = ({ element,setSelectedElement, level = 0 }) => {
 const ElementList = ({ elements, setSelectedElement }) => {
   return (
     <div className="w-full h-full max-w-full overflow-x-auto overflow-y-auto">
-      <h2 className="text-[#F5F5F5] text-xl mb-3 font-medium">Elements</h2>
+      <h2 className="text-[#F5F5F5] text-xl mb-3 font-medium">Elementos</h2>
       {elements.map((element) => (
         <ElementTree key={element.id} element={element} setSelectedElement={setSelectedElement} />
       ))}

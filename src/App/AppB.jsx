@@ -12,7 +12,7 @@ import CentralPart from "./AppComponents/CentralPart";
 import LeftPart from "./AppComponents/LeftPart";
 import useStore from "./store/store";
 
-const socket = io("https://sizaebuilder-backend.onrender.com", {
+const socket = io("http://localhost:4000", {
   transports: ["websocket", "polling"],
   withCredentials: true,
 });

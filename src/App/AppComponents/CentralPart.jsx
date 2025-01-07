@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import useStore from "../store/store";
 
-const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
+const CentralPart = ({ modeOfPart }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
 
-  const { droppedElements, setDroppedElements, selectedElement } = useStore();
+  const {
+    droppedElements,
+    setDroppedElements,
+    selectedElement,
+    draggingElement,
+    setDraggingElement,
+  } = useStore();
 
   // Permitir arrastrar sobre el contenedor
   const handleDragOver = (e) => {
@@ -162,13 +168,22 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
             onDrop={(e) => handleDrop(e, element.id)}
-            onTouchEnd={(e) => handleDrop(e, element.id)} // Simular la acción de soltar en táctiles
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              if (draggingElement === null) {
+                handleElementClick(element);
+              } else {
+                handleDrop(e, element.id);
+              }
+            }} // Maneja el soltar o el clic en táctiles
             onDragOver={handleDragOver}
             onTouchMove={handleTouchMove}
             onClick={(e) => {
               e.stopPropagation();
-              handleElementClick(element);
-            }}
+              if (draggingElement === null) {
+                handleElementClick(element);
+              }
+            }} // Ejecuta clic solo si no está arrastrando
             onContextMenu={(e) => {
               e.stopPropagation();
               handleContextMenu(e, element);
@@ -187,6 +202,10 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
             className={`${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -209,6 +228,10 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
             }`}
             placeholder={element.placeholder}
             key={element.id}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -227,6 +250,10 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
             className={`text-base text-black border border-black leading-none ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -248,13 +275,22 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
             onDrop={(e) => handleDrop(e, element.id)}
-            onTouchEnd={(e) => handleDrop(e, element.id)} // Simular la acción de soltar en táctiles
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              if (draggingElement === null) {
+                handleElementClick(element);
+              } else {
+                handleDrop(e, element.id);
+              }
+            }} // Maneja el soltar o el clic en táctiles
             onDragOver={handleDragOver}
             onTouchMove={handleTouchMove}
             onClick={(e) => {
               e.stopPropagation();
-              handleElementClick(element);
-            }}
+              if (draggingElement === null) {
+                handleElementClick(element);
+              }
+            }} // Ejecuta clic solo si no está arrastrando
             onContextMenu={(e) => {
               e.stopPropagation();
               handleContextMenu(e, element);
@@ -271,6 +307,10 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
             className={`text-base text-black border border-black ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -291,6 +331,10 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
             className={`${element.iconClass} ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -312,6 +356,10 @@ const CentralPart = ({ modeOfPart, draggingElement, setDraggingElement }) => {
             className={`w-32 h-32 mb-4 ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);

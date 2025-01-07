@@ -55,7 +55,7 @@ const ImageUploader = ({ imgSelected, setImgSelected, url }) => {
         type="file"
         accept="image/*"
         onChange={handleImageUpload}
-        className=""
+        className="mt-4 w-full text-white"
       />
       <div style={{ marginTop: "20px" }}>
         <h3 className="text-[#F5F5F5] text-lg font-medium">

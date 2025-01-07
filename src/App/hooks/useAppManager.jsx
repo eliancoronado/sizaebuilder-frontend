@@ -11,6 +11,8 @@ const useAppManager = () => {
     setSelectedElement,
     droppedElements,
     setDroppedElements,
+    draggingElement,
+    setDraggingElement,
   } = useStore(); // Usamos los métodos del store para actualizar el estado
 
   const handleStyleChange = (styleName, value) => {
@@ -156,7 +158,9 @@ const useAppManager = () => {
   const handleDrop = (e, parentId = null) => {
     e.preventDefault();
     e.stopPropagation();
-    const data = JSON.parse(e.dataTransfer.getData("application/reactflow"));
+    const data = draggingElement
+    ? draggingElement
+    : JSON.parse(e.dataTransfer.getData("application/reactflow"));
 
     // Nuevo elemento a agregar
     const newElement = {
@@ -240,6 +244,8 @@ const useAppManager = () => {
     } else {
       console.error("droppedElements no es un array:", updatedElements);
     }
+
+    setDraggingElement(null); // Restablecer el estado
   };
 
   const addChildToParent = (elements, parentId, child) => {
@@ -278,11 +284,22 @@ const useAppManager = () => {
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
             onDrop={(e) => handleDrop(e, element.id)}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              if (draggingElement === null) {
+                handleElementClick(element);
+              } else {
+                handleDrop(e, element.id);
+              }
+            }} // Maneja el soltar o el clic en táctiles
             onDragOver={handleDragOver}
+            onTouchMove={handleTouchMove}
             onClick={(e) => {
               e.stopPropagation();
-              handleElementClick(element);
-            }}
+              if (draggingElement === null) {
+                handleElementClick(element);
+              }
+            }} // Ejecuta clic solo si no está arrastrando
             onContextMenu={(e) => {
               e.stopPropagation();
               handleContextMenu(e, element);
@@ -301,6 +318,10 @@ const useAppManager = () => {
             className={`${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -323,6 +344,10 @@ const useAppManager = () => {
             }`}
             placeholder={element.placeholder}
             key={element.id}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -341,6 +366,10 @@ const useAppManager = () => {
             className={`text-base text-black border border-black leading-none ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -362,11 +391,22 @@ const useAppManager = () => {
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
             onDrop={(e) => handleDrop(e, element.id)}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              if (draggingElement === null) {
+                handleElementClick(element);
+              } else {
+                handleDrop(e, element.id);
+              }
+            }} // Maneja el soltar o el clic en táctiles
             onDragOver={handleDragOver}
+            onTouchMove={handleTouchMove}
             onClick={(e) => {
               e.stopPropagation();
-              handleElementClick(element);
-            }}
+              if (draggingElement === null) {
+                handleElementClick(element);
+              }
+            }} // Ejecuta clic solo si no está arrastrando
             onContextMenu={(e) => {
               e.stopPropagation();
               handleContextMenu(e, element);
@@ -383,6 +423,10 @@ const useAppManager = () => {
             className={`text-base text-black border border-black ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -403,6 +447,10 @@ const useAppManager = () => {
             className={`${element.iconClass} ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);
@@ -424,6 +472,10 @@ const useAppManager = () => {
             className={`w-32 h-32 mb-4 ${
               selectedElement?.id === element.id ? "border border-blue-500" : ""
             }`}
+            onTouchEnd={(e) => {
+              e.stopPropagation();
+              handleElementClick(element);
+            }}
             onClick={(e) => {
               e.stopPropagation();
               handleElementClick(element);

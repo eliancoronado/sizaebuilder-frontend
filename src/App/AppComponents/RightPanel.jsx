@@ -59,9 +59,9 @@ const RightPanel = ({
   if (!selectedElement) {
     return (
       <div className="w-full h-full col-span-1 bg-[#333333] p-4">
-        <h2 className="text-[#F5F5F5] text-xl font-medium">Properties</h2>
+        <h2 className="text-[#F5F5F5] text-xl font-medium">Propiedades</h2>
         {/* Select dropdown for pages */}
-        <h3 className="text-[#F5F5F5] text-base font-medium mt-3">Pages</h3>
+        <h3 className="text-[#F5F5F5] text-base font-medium mt-3">Página</h3>
         <select
           className="w-full h-8 rounded border mt-4 border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none"
           value={selectedPage}
@@ -74,7 +74,7 @@ const RightPanel = ({
           ))}
         </select>
         <p className="text-white mt-4">
-          Select an element to edit its properties.
+          Selecciona un elemento para editar sus propiedades.
         </p>
       </div>
     );
@@ -82,14 +82,14 @@ const RightPanel = ({
 
   return (
     <div className="w-full h-full col-span-1 bg-[#333333] p-4 no-scroll overflow-y-auto">
-      <h2 className="text-[#F5F5F5] text-xl font-medium">Properties</h2>
+      <h2 className="text-[#F5F5F5] text-xl font-medium">Propiedades</h2>
       <h3 className="text-[#BDBDBD] text-lg font-medium mt-4">
         Id: {selectedElement.id}
       </h3>
       <div className="w-full h-auto flex flex-col gap-3 mt-5">
-        <h3 className="text-[#F5F5F5] text-base font-medium">Pages</h3>
+        <h3 className="text-[#F5F5F5] text-base font-medium">Página</h3>
         <select
-          className="w-full h-8 rounded border mt-4 border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none"
+          className="w-full h-8 rounded border mt-2 border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none"
           value={selectedPage}
           onChange={handlePageSelect}
         >
@@ -269,10 +269,10 @@ const RightPanel = ({
                   value={selectedElement.styles.display}
                   onChange={(e) => handleStyleChange("display", e.target.value)}
                 >
-                  <option value="block">Block</option>
-                  <option value="inline-block">Inline-Block</option>
-                  <option value="flex">Flex</option>
-                  <option value="grid">Grid</option>
+                  <option value="block">Bloque</option>
+                  <option value="inline-block">Enlinea-Bloque</option>
+                  <option value="flex">Flexible</option>
+                  <option value="grid">Grilla</option>
                 </select>
               </div>
               <div className="mt-2 grid row-start-2 grid-cols-3 h-8 bg-[#555555] rounded-md">

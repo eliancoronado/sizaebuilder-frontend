@@ -203,45 +203,45 @@ const DashLayout = ({url}) => {
 
   return (
     <div
-      className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-gray-50 text-gray-900"
+      className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-[#2C2C2C] text-gray-900"
       onClick={closeContextMenu}
     >
       {/* Header */}
-      <header className="w-full h-[12vh] flex items-center justify-between px-6 bg-white shadow-md">
-        <h1 className="text-2xl font-bold">Projects</h1>
+      <header className="w-full h-[12vh] flex items-center justify-between px-6 bg-[#2C2C2C] shadow-md">
+        <h1 className="text-2xl font-bold text-white">Proyectos</h1>
         <div className="flex items-center gap-6">
           {/* Search Bar */}
-          <div className="relative hidden sm:flex items-center bg-gray-100 rounded-full px-4 py-1.5 shadow-sm">
+          <div className="relative hidden sm:flex items-center bg-[#383838] rounded-md px-4 py-1.5 shadow-sm">
             <input
               type="text"
               placeholder="Search projects..."
-              className="bg-transparent outline-none text-sm flex-1"
+              className="bg-transparent text-[#858485] outline-none text-sm flex-1"
             />
-            <FaSearch className="text-gray-500 text-sm" />
+            <FaSearch className="text-[#858485] text-sm" />
           </div>
           {/* User Menu */}
           <div className="flex items-center gap-2 cursor-pointer"
           onClick={() => setIsModalUserOpen(true)}
           >
-            <MdAccountCircle className="text-3xl" />
-            <p className="text-sm items-center gap-1 hidden sm:flex">
+            <MdAccountCircle className="text-3xl text-white" />
+            <p className="text-sm text-white items-center gap-1 hidden sm:flex">
             {user ? user.username : "Loading..."} <FaChevronDown />
             </p>
           </div>
-          <FaBars className="text-3xl sm:hidden block" />
+          <FaBars className="text-3xl sm:hidden block text-white" />
         </div>
       </header>
 
       {/* Sub-header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-gray-100">
-        <p className="text-sm font-medium">
-          All projects you have ({userProjects.length})
+      <div className="flex items-center justify-between px-6 py-4 bg-[#2C2C2C]">
+        <p className="text-sm font-normal text-white">
+          Todos tus proyectos ({userProjects.length})
         </p>
         <button
           onClick={toggleDropdown}
-          className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-500 text-sm font-semibold flex items-center gap-2 transition"
+          className="px-4 py-2 rounded-md bg-[#0C8CE9] text-white hover:bg-[#0c8de9be] text-sm font-semibold flex items-center gap-2 transition"
         >
-          <GoPlus /> Create a new App
+          <GoPlus className="font-bold" /> Create a new App
         </button>
         {isDropdownVisible && (
           <div className="absolute right-8 top-[22vh] bg-white shadow-lg rounded-md z-10 w-48">
@@ -273,14 +273,14 @@ const DashLayout = ({url}) => {
                 key={up._id}
                 onContextMenu={(e) => handleContextMenu(e, up._id)}
                 onClick={() => navigate(`/project/${up._id}`)}
-                className="bg-white overflow-hidden rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col"
+                className="bg-transparent hover:shadow-lg transition duration-300 cursor-pointer flex flex-col"
               >
                 {/* Card Image */}
-                <div className="h-36 bg-gray-200 flex items-center justify-center overflow-hidden">
+                <div className="h-48 bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
                   <img
                     src={`${url}/images/${up._id}.png`}
                     alt="Preview"
-                    className="w-1/2 h-full object-cover scale-125"
+                    className="w-1/2 h-full object-cover scale-125 rounded-lg"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.style.display = "none";
@@ -294,9 +294,9 @@ const DashLayout = ({url}) => {
                   </p>
                 </div>
                 {/* Card Content */}
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold truncate">{up.name}</h3>
-                  <p className="text-sm text-gray-500">
+                <div className="py-1 pl-0.5 pb-2">
+                  <h3 className="text-base font-semibold truncate text-white">{up.name}</h3>
+                  <p className="text-sm text-[#BFBFBF]">
                     {formatDistanceToNow(new Date(up.createdAt), {
                       addSuffix: true,
                     })}
@@ -329,31 +329,31 @@ const DashLayout = ({url}) => {
             onClick={(e) => handleMenuClick(e, "open")}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
           >
-            Open
+            Abrir
           </button>
           <button
             onClick={(e) => handleMenuClick(e, "openleft")}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
           >
-            Open in Left
+            Abrir como izquierdo
           </button>
           <button
             onClick={(e) => handleMenuClick(e, "opencentral")}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
           >
-            Open in Central
+            Abrir como central
           </button>
           <button
             onClick={(e) => handleMenuClick(e, "rename")}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
           >
-            Rename
+            Renombrar
           </button>
           <button
             onClick={(e) => handleMenuClick(e, "delete")}
             className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
           >
-            Delete
+            Borrar
           </button>
         </div>
       )}
@@ -361,20 +361,20 @@ const DashLayout = ({url}) => {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 shadow-lg w-80">
-            <h2 className="text-xl font-semibold mb-4">Edit Project Name</h2>
+            <h2 className="text-xl font-semibold mb-4">Editar Nombre del Proyecto</h2>
             <input
               type="text"
               value={newProjectName}
               onChange={(e) => setNewProjectName(e.target.value)}
               className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter new project name"
+              placeholder="Escribe el nuevo nombre"
             />
             <div className="flex justify-end mt-4">
               <button
                 onClick={closeModal}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 mr-2"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 onClick={(e) => {
@@ -383,7 +383,7 @@ const DashLayout = ({url}) => {
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
-                Save
+                Guardar
               </button>
             </div>
           </div>
