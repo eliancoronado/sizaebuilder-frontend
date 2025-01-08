@@ -23,7 +23,6 @@ const LeftPart = ({ mode, id, onUpdate }) => {
     draggingElement,
     setDraggingElement,
   } = useStore();
-  const { id } = useParams();
 
   // Lista de elementos a mostrar
   const elements = [
@@ -83,11 +82,11 @@ const LeftPart = ({ mode, id, onUpdate }) => {
   };
 
   const handleTouchStart = (e, element) => {
+    setDraggingElement({ id: element.id, name: element.name });
     socket.emit('draggingElementStarted', {
       id: id,
       draggingElement: draggingElement,
     });
-    setDraggingElement({ id: element.id, name: element.name });
   };
 
   function handleSave() {
