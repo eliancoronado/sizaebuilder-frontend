@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useStore from "../store/store";
+import { useParams } from "react-router-dom";
 
 const CentralPart = ({ modeOfPart }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
@@ -11,6 +12,10 @@ const CentralPart = ({ modeOfPart }) => {
     draggingElement,
     setDraggingElement,
   } = useStore();
+  const { id } = useParams();
+  const videoRef = useRef(null);
+  const [dropVisible, setDropVisible] = useState(false); // Estado para la animación
+  const [animationTriggered, setAnimationTriggered] = useState(false); // Evita la repetición de la animación
 
   // Permitir arrastrar sobre el contenedor
   const handleDragOver = (e) => {
@@ -36,6 +41,111 @@ const CentralPart = ({ modeOfPart }) => {
       console.log("Toque sobre un área válida para soltar");
     }
   };
+
+  useEffect(() => {
+    const initializeCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        videoRef.current.srcObject = stream;
+
+        videoRef.current.onloadedmetadata = async () => {
+          await videoRef.current.play();
+
+          const hands = new Hands({
+            locateFile: (file) =>
+              `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`,
+          });
+
+          hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.7,
+            minTrackingConfidence: 0.7,
+          });
+
+          hands.onResults((results) => {
+            if (
+              results.multiHandLandmarks &&
+              results.multiHandLandmarks.length > 0
+            ) {
+              const landmarks = results.multiHandLandmarks[0]; // Usamos la primera mano detectada
+              const fingersUp = countFingers(landmarks);
+
+              console.log(`Dedos levantados: ${fingersUp}`);
+
+              // Si se detectan 5 dedos levantados por primera vez, activa la animación
+              if (fingersUp === 5 && !animationTriggered) {
+                setDropVisible(true);
+                setAnimationTriggered(true); // Asegura que la animación solo se ejecute una vez
+                if (draggingElement !== null) {
+                  handleDrop({ preventDefault: () => {} }); // Simula la acción de soltar el elemento
+                }
+                setTimeout(() => {
+                  setDropVisible(false); // Desaparece la gota después de un tiempo
+                }, 2000); // La animación dura 2 segundos
+              }
+            }
+          });
+
+          const processVideo = async () => {
+            if (videoRef.current.readyState === 4) {
+              await hands.send({ image: videoRef.current });
+            }
+            requestAnimationFrame(processVideo);
+          };
+
+          processVideo();
+        };
+      } catch (error) {
+        console.error("Error al acceder a la cámara:", error);
+      }
+    };
+
+    const countFingers = (landmarks) => {
+      const fingers = [0, 0, 0, 0, 0]; // Pulgar, índice, medio, anular, meñique
+      const fingertipIds = [4, 8, 12, 16, 20]; // Landmarks de las puntas de los dedos
+      const fingerBaseIds = [2, 5, 9, 13, 17]; // Landmarks de las bases de los dedos
+
+      // Verifica el pulgar
+      if (landmarks[4].x > landmarks[2].x) {
+        fingers[0] = 1;
+      }
+
+      // Verifica los otros dedos
+      for (let i = 1; i < 5; i++) {
+        if (landmarks[fingertipIds[i]].y < landmarks[fingerBaseIds[i]].y) {
+          fingers[i] = 1; // Dedo levantado
+        }
+      }
+
+      // Contar dedos levantados
+      return fingers.reduce((sum, isUp) => sum + isUp, 0);
+    };
+
+    initializeCamera();
+  }, [animationTriggered]);
+
+  useEffect(() => {
+    // Escuchar el evento 'draggingElementUpdated' para actualizar el estado
+    const handleDraggingElementUpdated = ({
+      id: projectId,
+      draggingElement,
+    }) => {
+      if (projectId === id) {
+        console.log(`Elemento arrastrado actualizado: ${draggingElement.name}`);
+        setDraggingElement(draggingElement);
+      }
+    };
+
+    socket.on("draggingElementUpdated", handleDraggingElementUpdated);
+
+    // Limpiar la escucha cuando el componente se desmonte
+    return () => {
+      socket.off("draggingElementUpdated");
+    };
+  }, [id]);
 
   // Manejar la acción de soltar un elemento
   const handleDrop = (e, parentId = null) => {
@@ -402,6 +512,37 @@ const CentralPart = ({ modeOfPart }) => {
               {droppedElements.map((element) => renderElement(element))}
             </div>
           </div>
+          <video ref={videoRef} style={{ display: "none" }} />
+          {/* Animación de la gota */}
+          {dropVisible && <div className="drop" />}
+          <style>{`
+        .drop {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          background: rgba(0, 0, 255, 0.5); /* Color de la gota */
+          animation: dropAnimation 2s forwards;
+          transform: translate(-50%, -50%);
+        }
+
+        @keyframes dropAnimation {
+          0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: translate(-50%, -60%) scale(1.5);
+            opacity: 0.6;
+          }
+          100% {
+            transform: translate(-50%, -70%) scale(2);
+            opacity: 0;
+          }
+        }
+      `}</style>
         </div>
       )}
       {modeOfPart === "leftPart" && (

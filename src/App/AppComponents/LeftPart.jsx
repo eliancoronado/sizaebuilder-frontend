@@ -5,7 +5,7 @@ import { PiSelectionAllBold, PiSelectionAllDuotone } from "react-icons/pi";
 import { RxInput } from "react-icons/rx";
 import { FaImage } from "react-icons/fa6";
 import html2canvas from "html2canvas";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ElementList from "./ElementList";
 import ImageUploader from "./ImageUploader";
 import CentralPart from "./CentralPart";
@@ -23,8 +23,7 @@ const LeftPart = ({ mode, id, onUpdate }) => {
     draggingElement,
     setDraggingElement,
   } = useStore();
-
-  const navigate = useNavigate();
+  const { id } = useParams();
 
   // Lista de elementos a mostrar
   const elements = [
@@ -84,6 +83,10 @@ const LeftPart = ({ mode, id, onUpdate }) => {
   };
 
   const handleTouchStart = (e, element) => {
+    socket.emit('draggingElementStarted', {
+      id: id,
+      draggingElement: draggingElement,
+    });
     setDraggingElement({ id: element.id, name: element.name });
   };
 
@@ -142,6 +145,7 @@ const LeftPart = ({ mode, id, onUpdate }) => {
                       draggable
                       onDragStart={(e) => handleDragStart(e, element)}
                       onTouchStart={(e) => handleTouchStart(e, element)}
+                      onClick={(e) => handleTouchStart(e, element)}
                     >
                       {element.icon}
                       <p className="text-sm font-extrabold text-[#4F4F4F]">
