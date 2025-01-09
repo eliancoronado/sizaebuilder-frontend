@@ -82,7 +82,7 @@ const CentralPart = ({ modeOfPart }) => {
         console.log("draggingElement:", draggingElement);
 
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" },
+          video: true,
         });
         videoRef.current.srcObject = stream;
 
