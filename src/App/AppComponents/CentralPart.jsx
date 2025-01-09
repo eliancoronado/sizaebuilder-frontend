@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useStore from "../store/store";
 import { useParams } from "react-router-dom";
+import "@mediapipe/hands";
+import { Hands } from "@mediapipe/hands";
+import io from "socket.io-client";
+
+const socket = io("https://sizaebuilder-backend.onrender.com", {
+  transports: ["websocket", "polling"],
+  withCredentials: true,
+});
 
 const CentralPart = ({ modeOfPart }) => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
@@ -43,10 +51,38 @@ const CentralPart = ({ modeOfPart }) => {
   };
 
   useEffect(() => {
+    const handleDraggingElementUpdated = ({
+      id: projectId,
+      draggingElement: dElement,
+    }) => {
+      if (projectId === id) {
+        console.log(`Elemento arrastrado actualizado:`, dElement);
+        // Actualiza el estado con el objeto correcto
+        setDraggingElement(dElement);
+      }
+    };
+
+    socket.on("draggingElementUpdated", handleDraggingElementUpdated);
+
+    // Limpiar la escucha cuando el componente se desmonte
+    return () => {
+      socket.off("draggingElementUpdated", handleDraggingElementUpdated);
+    };
+  }, [id]);
+
+  useEffect(() => {
     const initializeCamera = async () => {
       try {
+
+        if (!draggingElement) {
+          console.log("draggingElement no está disponible. Cámara no inicializada.");
+          return;
+        }
+
+        console.log("draggingElement:", draggingElement);
+
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: { facingMode: "user" },
         });
         videoRef.current.srcObject = stream;
 
@@ -75,13 +111,11 @@ const CentralPart = ({ modeOfPart }) => {
 
               console.log(`Dedos levantados: ${fingersUp}`);
 
-              // Si se detectan 5 dedos levantados por primera vez, activa la animación
-              if (fingersUp === 5 && !animationTriggered) {
+              if (fingersUp === 5) {
                 setDropVisible(true);
                 setAnimationTriggered(true); // Asegura que la animación solo se ejecute una vez
-                if (draggingElement !== null) {
-                  handleDrop({ preventDefault: () => {} }); // Simula la acción de soltar el elemento
-                }
+                console.log("Soltando el elemento:", draggingElement);
+                handleDrop()
                 setTimeout(() => {
                   setDropVisible(false); // Desaparece la gota después de un tiempo
                 }, 2000); // La animación dura 2 segundos
@@ -125,35 +159,38 @@ const CentralPart = ({ modeOfPart }) => {
     };
 
     initializeCamera();
-  }, [animationTriggered]);
-
-  useEffect(() => {
-    // Escuchar el evento 'draggingElementUpdated' para actualizar el estado
-    const handleDraggingElementUpdated = ({
-      id: projectId,
-      draggingElement,
-    }) => {
-      if (projectId === id) {
-        console.log(`Elemento arrastrado actualizado: ${draggingElement.name}`);
-        setDraggingElement(draggingElement);
-      }
-    };
-
-    socket.on("draggingElementUpdated", handleDraggingElementUpdated);
-
-    // Limpiar la escucha cuando el componente se desmonte
-    return () => {
-      socket.off("draggingElementUpdated");
-    };
-  }, [id]);
+  }, [draggingElement]);
 
   // Manejar la acción de soltar un elemento
-  const handleDrop = (e, parentId = null) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const data = draggingElement
-      ? draggingElement
-      : JSON.parse(e.dataTransfer.getData("application/reactflow"));
+  const handleDrop = (e = null, parentId = null) => {
+    // Si el evento existe, previene el comportamiento predeterminado
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Maneja el origen de los datos
+    let data = null;
+
+    if (draggingElement) {
+      data = draggingElement; // Si hay un elemento arrastrado, úsalo
+    } else if (e && e.dataTransfer) {
+      try {
+        data = JSON.parse(e.dataTransfer.getData("application/reactflow"));
+      } catch (err) {
+        console.error(
+          "Error al parsear los datos del evento de arrastre:",
+          err
+        );
+      }
+    }
+
+    console.log("ejecutando drop");
+
+    if (!data) {
+      console.error("No hay datos disponibles para procesar el drop.");
+      return;
+    }
 
     // Nuevo elemento a agregar
     const newElement = {
@@ -570,6 +607,37 @@ const CentralPart = ({ modeOfPart }) => {
               {droppedElements.map((element) => renderElement(element))}
             </div>
           </div>
+          <video ref={videoRef} style={{ display: "none" }} />
+          {/* Animación de la gota */}
+          {dropVisible && <div className="drop" />}
+          <style>{`
+        .drop {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          background: rgba(0, 0, 255, 0.5); /* Color de la gota */
+          animation: dropAnimation 2s forwards;
+          transform: translate(-50%, -50%);
+        }
+
+        @keyframes dropAnimation {
+          0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: translate(-50%, -60%) scale(1.5);
+            opacity: 0.6;
+          }
+          100% {
+            transform: translate(-50%, -70%) scale(2);
+            opacity: 0;
+          }
+        }
+      `}</style>
         </div>
       )}
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaSearch, FaChevronDown, FaBox, FaRegSquare } from "react-icons/fa";
 import { MdOutlineTextFields, MdOutlineInsertEmoticon } from "react-icons/md";
 import { PiSelectionAllBold, PiSelectionAllDuotone } from "react-icons/pi";
@@ -10,6 +10,12 @@ import ElementList from "./ElementList";
 import ImageUploader from "./ImageUploader";
 import CentralPart from "./CentralPart";
 import useStore from "../store/store";
+import io from "socket.io-client";
+
+const socket = io("https://sizaebuilder-backend.onrender.com", {
+  transports: ["websocket", "polling"],
+  withCredentials: true,
+});
 
 const LeftPart = ({ mode, id, onUpdate }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,12 +88,26 @@ const LeftPart = ({ mode, id, onUpdate }) => {
   };
 
   const handleTouchStart = (e, element) => {
+    console.log("Iniciando arrastre con el toque:", element);
     setDraggingElement({ id: element.id, name: element.name });
-    socket.emit('draggingElementStarted', {
-      id: id,
-      draggingElement: draggingElement,
+    console.log("Estado de draggingElement después de setDraggingElement:", draggingElement);
+  
+    // Emitir el evento
+    socket.emit("draggingElementStarted", {
+      id,
+      draggingElement: { id: element.id, name: element.name },
     });
+  
+    // Asegúrate de que se actualizó el estado
+    setTimeout(() => {
+      console.log("Estado actualizado en setTimeout:", draggingElement);
+    }, 0);
   };
+  
+
+  useEffect(() => {
+    console.log("draggingElement:", draggingElement);
+  },[draggingElement]);
 
   function handleSave() {
     const saveId = id;
