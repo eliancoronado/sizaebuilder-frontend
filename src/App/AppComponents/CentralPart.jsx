@@ -73,9 +73,10 @@ const CentralPart = ({ modeOfPart }) => {
   useEffect(() => {
     const initializeCamera = async () => {
       try {
-
         if (!draggingElement) {
-          console.log("draggingElement no está disponible. Cámara no inicializada.");
+          console.log(
+            "draggingElement no está disponible. Cámara no inicializada."
+          );
           return;
         }
 
@@ -115,7 +116,7 @@ const CentralPart = ({ modeOfPart }) => {
                 setDropVisible(true);
                 setAnimationTriggered(true); // Asegura que la animación solo se ejecute una vez
                 console.log("Soltando el elemento:", draggingElement);
-                handleDrop()
+                handleDrop();
                 setTimeout(() => {
                   setDropVisible(false); // Desaparece la gota después de un tiempo
                 }, 2000); // La animación dura 2 segundos
@@ -159,6 +160,14 @@ const CentralPart = ({ modeOfPart }) => {
     };
 
     initializeCamera();
+
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
+        videoRef.current.srcObject = null;
+      }
+    };
   }, [draggingElement]);
 
   // Manejar la acción de soltar un elemento
