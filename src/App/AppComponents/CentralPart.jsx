@@ -114,7 +114,9 @@ const CentralPart = ({ modeOfPart }) => {
 
               if (fingersUp === 5) {
                 setDropVisible(true);
-                setAnimationTriggered(true); // Asegura que la animación solo se ejecute una vez
+                if (!animationTriggered) {
+                  setAnimationTriggered(true); // Asegura que la animación solo se ejecute una vez
+                }
                 console.log("Soltando el elemento:", draggingElement);
                 handleDrop();
                 setTimeout(() => {

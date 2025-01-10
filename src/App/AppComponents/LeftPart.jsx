@@ -89,8 +89,13 @@ const LeftPart = ({ mode, id, onUpdate }) => {
 
   const handleTouchStart = (e, element) => {
     console.log("Iniciando arrastre con el toque:", element);
-    setDraggingElement({ id: element.id, name: element.name });
-    console.log("Estado de draggingElement después de setDraggingElement:", draggingElement);
+    if (draggingElement) {
+      console.log("Ya hay un elemento arrastrándose:", draggingElement);
+      setDraggingElement(null);
+    }else{
+      setDraggingElement({ id: element.id, name: element.name });
+      console.log("Estado de draggingElement después de setDraggingElement:", draggingElement);
+    }
   
     // Emitir el evento
     socket.emit("draggingElementStarted", {

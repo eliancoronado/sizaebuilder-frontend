@@ -1,49 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { GoPlus } from "react-icons/go";
-import { IoPhonePortraitOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaSearch, FaChevronDown } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
-import { MdAccountCircle } from "react-icons/md";
+import { Button } from "@/components/ui/button";
+import { ChevronsUpDown, LogOut, PackagePlus } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-const DashLayout = ({url}) => {
+const DashLayout = ({ url }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userProjects, setUserProjects] = useState([]);
-  const [contextMenu, setContextMenu] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalUserOpen, setIsModalUserOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [newProjectName, setNewProjectName] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleContextMenu = (e, upId) => {
-    e.preventDefault();
-    setContextMenu({
-      x: e.clientX,
-      y: e.clientY,
-      projectId: upId,
-    });
-  };
-
-  const handleMenuClick = (e, action) => {
+  const handleMenuClick = (e, action, projectId) => {
     if (action === "open") {
-      navigate(`/project/${contextMenu.projectId}`);
+      navigate(`/project/${projectId}`);
     } else if (action === "delete") {
-      deleteProject(e, contextMenu.projectId);
+      deleteProject(e, projectId);
     } else if (action === "rename") {
-      openModal(e, contextMenu.projectId);
+      openModal(e, projectId);
     } else if (action === "openleft") {
-      navigate(`/project/left/${contextMenu.projectId}`);
+      navigate(`/project/left/${projectId}`);
     } else if (action === "opencentral") {
-      navigate(`/project/central/${contextMenu.projectId}`);
+      navigate(`/project/central/${projectId}`);
     }
-    setContextMenu(null); // Ocultar el menú después de la acción
   };
 
   const openModal = (e, projectId) => {
@@ -58,10 +69,6 @@ const DashLayout = ({url}) => {
     setNewProjectName("");
   };
 
-  const closeContextMenu = () => {
-    setContextMenu(null); // Ocultar el menú si se hace clic fuera de él
-  };
-
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
   };
@@ -72,9 +79,7 @@ const DashLayout = ({url}) => {
     const handleUserProjects = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `${url}/projects/${user._id}`
-        );
+        const response = await axios.get(`${url}/projects/${user._id}`);
         if (response.data && Array.isArray(response.data)) {
           setUserProjects(response.data);
           console.log(response.data);
@@ -94,7 +99,7 @@ const DashLayout = ({url}) => {
         setDropdownVisible(false);
       }
     };
-    if (user){
+    if (user) {
       handleUserProjects();
     }
   }, []);
@@ -147,9 +152,7 @@ const DashLayout = ({url}) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.delete(
-        `${url}/delete-project/${projectId}`
-      );
+      const response = await axios.delete(`${url}/delete-project/${projectId}`);
       console.log(response.data);
       setLoading(false);
       setUserProjects((prevProjects) =>
@@ -165,15 +168,11 @@ const DashLayout = ({url}) => {
     const data = { authorId: user._id };
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${url}/new-project`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(`${url}/new-project`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.data) {
         console.log(response.data);
         setUserProjects((prevProjects) => [response.data, ...prevProjects]);
@@ -189,6 +188,8 @@ const DashLayout = ({url}) => {
     }
   };
 
+  const initials = user.username.slice(0, 2).toUpperCase();
+
   if (!userProjects) {
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center bg-black bg-opacity-30">
       <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -202,16 +203,13 @@ const DashLayout = ({url}) => {
   }
 
   return (
-    <div
-      className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-[#2C2C2C] text-gray-900"
-      onClick={closeContextMenu}
-    >
+    <div className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-card text-gray-900">
       {/* Header */}
-      <header className="w-full h-[12vh] flex items-center justify-between px-6 bg-[#2C2C2C] shadow-md">
+      <header className="w-full h-[12vh] flex items-center justify-between px-6 bg-card shadow-md">
         <h1 className="text-2xl font-bold text-white">Proyectos</h1>
         <div className="flex items-center gap-6">
           {/* Search Bar */}
-          <div className="relative hidden sm:flex items-center bg-[#383838] rounded-md px-4 py-1.5 shadow-sm">
+          <div className="relative hidden sm:flex items-center bg-muted rounded-md px-4 py-1.5 shadow-sm">
             <input
               type="text"
               placeholder="Search projects..."
@@ -219,49 +217,67 @@ const DashLayout = ({url}) => {
             />
             <FaSearch className="text-[#858485] text-sm" />
           </div>
-          {/* User Menu */}
-          <div className="flex items-center gap-2 cursor-pointer"
-          onClick={() => setIsModalUserOpen(true)}
-          >
-            <MdAccountCircle className="text-3xl text-white" />
-            <p className="text-sm text-white items-center gap-1 hidden sm:flex">
-            {user ? user.username : "Loading..."} <FaChevronDown />
-            </p>
-          </div>
-          <FaBars className="text-3xl sm:hidden block text-white" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="text-sidebar-accent-foreground text-white sm:flex hidden"
+              >
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="rounded-lg bg-transparent border border-muted">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tigh text-white">
+                  <span className="truncate font-semibold">
+                    {user.username}
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-auto size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem
+                onClick={() => {
+                  navigate("/login");
+                  localStorage.removeItem("user");
+                }}
+              >
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <FaBars
+            className="text-3xl sm:hidden block text-white"
+            onClick={() => setSidebarOpen(true)}
+          />
         </div>
       </header>
 
       {/* Sub-header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-[#2C2C2C]">
+      <div className="flex items-center justify-between px-6 py-4 bg-card">
         <p className="text-sm font-normal text-white">
           Todos tus proyectos ({userProjects.length})
         </p>
-        <button
-          onClick={toggleDropdown}
-          className="px-4 py-2 rounded-md bg-[#0C8CE9] text-white hover:bg-[#0c8de9be] text-sm font-semibold flex items-center gap-2 transition"
-        >
-          <GoPlus className="font-bold" /> Create a new App
-        </button>
-        {isDropdownVisible && (
-          <div className="absolute right-8 top-[22vh] bg-white shadow-lg rounded-md z-10 w-48">
-            <ul className="py-2">
-              <li
-                onClick={(e) => {
-                  createNewProject(e);
-                  setDropdownVisible(false);
-                }}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-              >
-                <IoPhonePortraitOutline />
-                Create Mobile App
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                Other option
-              </li>
-            </ul>
-          </div>
-        )}
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button onClick={toggleDropdown}>
+              <PackagePlus /> Crear proyecto
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={createNewProject}>
+                Crear proyecto mobile
+              </DropdownMenuItem>
+              <DropdownMenuItem>...</DropdownMenuItem>
+              <DropdownMenuItem>...</DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Main Content */}
@@ -269,40 +285,85 @@ const DashLayout = ({url}) => {
         {userProjects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {userProjects.map((up) => (
-              <div
-                key={up._id}
-                onContextMenu={(e) => handleContextMenu(e, up._id)}
-                onClick={() => navigate(`/project/${up._id}`)}
-                className="bg-transparent hover:shadow-lg transition duration-300 cursor-pointer flex flex-col"
-              >
-                {/* Card Image */}
-                <div className="h-48 bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
-                  <img
-                    src={`${url}/images/${up._id}.png`}
-                    alt="Preview"
-                    className="w-1/2 h-full object-cover scale-125 rounded-lg"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.style.display = "none";
-                      const fallbackText =
-                        e.target.parentElement.querySelector("p.text-gray-500");
-                      if (fallbackText) fallbackText.style.display = "block";
+              <ContextMenu key={up._id}>
+                <ContextMenuTrigger>
+                  <div
+                    key={up._id}
+                    //onContextMenu={(e) => handleContextMenu(e, up._id)}
+                    onClick={() => navigate(`/project/${up._id}`)}
+                    className="bg-transparent hover:shadow-lg transition duration-300 cursor-pointer flex flex-col"
+                  >
+                    {/* Card Image */}
+                    <div className="h-48 bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
+                      <img
+                        src={`${url}/images/${up._id}.png`}
+                        alt="Preview"
+                        className="w-1/2 h-full object-cover scale-125 rounded-lg"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.style.display = "none";
+                          const fallbackText =
+                            e.target.parentElement.querySelector(
+                              "p.text-gray-500"
+                            );
+                          if (fallbackText)
+                            fallbackText.style.display = "block";
+                        }}
+                      />
+                      <p className="text-sm text-gray-500 hidden pointer-events-none">
+                        No preview available
+                      </p>
+                    </div>
+                    {/* Card Content */}
+                    <div className="py-1 pl-0.5 pb-2">
+                      <h3 className="text-base font-semibold truncate text-white">
+                        {up.name}
+                      </h3>
+                      <p className="text-sm text-[#BFBFBF]">
+                        {formatDistanceToNow(new Date(up.createdAt), {
+                          addSuffix: true,
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </ContextMenuTrigger>
+                <ContextMenuContent className="w-64">
+                  <ContextMenuItem
+                    inset
+                    onClick={(e) => handleMenuClick(e, "open", up._id)}
+                  >
+                    Abrir
+                  </ContextMenuItem>
+                  <ContextMenuItem
+                    inset
+                    onClick={(e) => handleMenuClick(e, "openleft", up._id)}
+                  >
+                    Abrir izquierdo
+                  </ContextMenuItem>
+                  <ContextMenuItem
+                    inset
+                    onClick={(e) => handleMenuClick(e, "opencentral", up._id)}
+                  >
+                    Abrir central
+                  </ContextMenuItem>
+
+                  <ContextMenuItem
+                    inset
+                    onClick={(e) => {
+                      handleMenuClick(e, "rename", up._id);
                     }}
-                  />
-                  <p className="text-sm text-gray-500 hidden">
-                    No preview available
-                  </p>
-                </div>
-                {/* Card Content */}
-                <div className="py-1 pl-0.5 pb-2">
-                  <h3 className="text-base font-semibold truncate text-white">{up.name}</h3>
-                  <p className="text-sm text-[#BFBFBF]">
-                    {formatDistanceToNow(new Date(up.createdAt), {
-                      addSuffix: true,
-                    })}
-                  </p>
-                </div>
-              </div>
+                  >
+                    Renombrar
+                  </ContextMenuItem>
+
+                  <ContextMenuItem
+                    inset
+                    onClick={(e) => handleMenuClick(e, "delete", up._id)}
+                  >
+                    Borrar
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
             ))}
           </div>
         ) : (
@@ -312,6 +373,62 @@ const DashLayout = ({url}) => {
         )}
       </main>
 
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onDimmiss={closeModal}
+      >
+        <ContextMenu>
+          <ContextMenuTrigger>
+            <div onClick={() => console.log("Clicked")}>
+              {/* Contenido aquí */}
+            </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem
+              onClick={() => {
+                console.log("Opening modal");
+                setIsModalOpen(true);
+              }}
+            >
+              Abrir Modal
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cambiar el nombre del proyecto</DialogTitle>
+            <DialogDescription>
+              Escribe un nuevo nombre para el proyecto
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <Label htmlFor="link" className="sr-only">
+                Link
+              </Label>
+              <Input
+                id="link"
+                placeholder="Nuevo nombre"
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={(e) => {
+                setIsModalOpen(false);
+                closeModal();
+                updateProjectName(e, editingProjectId);
+              }}
+            >
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Loading Indicator */}
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -319,79 +436,10 @@ const DashLayout = ({url}) => {
         </div>
       )}
 
-      {/* Context Menu */}
-      {contextMenu && (
-        <div
-          className="absolute bg-white shadow-md rounded-md p-2 z-50"
-          style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-        >
-          <button
-            onClick={(e) => handleMenuClick(e, "open")}
-            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-          >
-            Abrir
-          </button>
-          <button
-            onClick={(e) => handleMenuClick(e, "openleft")}
-            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-          >
-            Abrir como izquierdo
-          </button>
-          <button
-            onClick={(e) => handleMenuClick(e, "opencentral")}
-            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-          >
-            Abrir como central
-          </button>
-          <button
-            onClick={(e) => handleMenuClick(e, "rename")}
-            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-          >
-            Renombrar
-          </button>
-          <button
-            onClick={(e) => handleMenuClick(e, "delete")}
-            className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
-          >
-            Borrar
-          </button>
-        </div>
-      )}
-
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg w-80">
-            <h2 className="text-xl font-semibold mb-4">Editar Nombre del Proyecto</h2>
-            <input
-              type="text"
-              value={newProjectName}
-              onChange={(e) => setNewProjectName(e.target.value)}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Escribe el nuevo nombre"
-            />
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={closeModal}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 mr-2"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={(e) => {
-                  updateProjectName(e, editingProjectId);
-                  closeModal();
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Guardar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {isModalUserOpen && (
-        <div className="absolute top-[12vh] right-2 z-50 bg-white shadow-md rounded-md p-2"
-        onMouseLeave={() => setIsModalUserOpen(false)}
+        <div
+          className="absolute top-[12vh] right-2 z-50 bg-white shadow-md rounded-md p-2"
+          onMouseLeave={() => setIsModalUserOpen(false)}
         >
           <button
             onClick={() => {
@@ -403,6 +451,55 @@ const DashLayout = ({url}) => {
             Cerrar Sesión
           </button>
         </div>
+      )}
+
+      {/* Sidebar */}
+      {sidebarOpen && (
+        <DropdownMenu>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+            <div className="w-72 bg-secondary h-full shadow-lg place-self-end px-5 py-8">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-white">Sizae</h1>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-2xl text-white"
+                >
+                  <FaBars className="text-3xl text-white" />
+                </button>
+              </div>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="text-sidebar-accent-foreground text-white mt-5 py-6 w-full"
+                >
+                  <Avatar className="h-14 w-14 rounded-lg">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback className="rounded-lg bg-transparent border border-muted text-xl">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tigh text-white">
+                    <span className="truncate font-semibold text-base">
+                      {user.username}
+                    </span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigate("/login");
+                    localStorage.removeItem("user");
+                  }}
+                >
+                  <LogOut />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </div>
+          </div>
+        </DropdownMenu>
       )}
     </div>
   );
