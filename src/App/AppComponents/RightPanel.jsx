@@ -93,8 +93,8 @@ const RightPanel = ({
           value={selectedPage}
           onChange={handlePageSelect}
         >
-          {project.pages.map((page, index) => (
-            <option key={index} value={page.name}>
+          {project.pages.map((page) => (
+            <option key={page._id} value={page.name}>
               {page.name}
             </option>
           ))}

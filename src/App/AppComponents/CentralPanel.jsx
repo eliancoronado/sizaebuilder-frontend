@@ -15,7 +15,6 @@ const CentralPanel = ({
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPageName, setNewPageName] = useState("");
-  
 
   const {
     projectData: project,
@@ -54,7 +53,7 @@ const CentralPanel = ({
       });
 
       // Puedes establecer la página recién creada como la seleccionada
-      setSelectedPage("New Page");
+      setSelectedPage(newPage.name);
     } catch (error) {
       console.error("Error al agregar la nueva página:", error);
     }

@@ -41,10 +41,7 @@ const AppB = ({ modeScreen }) => {
     setProjectData,
     droppedElements,
     setDroppedElements,
-    selectedElement,
-    setSelectedElement,
     imgSelected,
-    setImgSelected,
     blocklyCode,
     setBlockyCode,
     workspaceState,
@@ -107,16 +104,28 @@ const AppB = ({ modeScreen }) => {
     const handleProjectUpdate = (updatedProject) => {
       console.log("Proyecto actualizado en tiempo real:", updatedProject);
 
-      // Obtener los elementos actualizados
-      const updatedElements = updatedProject.pages[0].elements || [];
-      const updatedCode = updatedProject.pages[0].state || [];
-      const updateCodeJs = updatedProject.pages[0].code; // Guardar el código generado
+      // Buscar la página seleccionada por nombre
+      const selectedPageData = updatedProject.pages.find(
+        (page) => page.name === selectedPage
+      );
+
+      if (!selectedPageData) {
+        console.error(`La página seleccionada (${selectedPage}) no existe.`);
+        return;
+      }
+
+      // Obtener los elementos actualizados de la página seleccionada
+      const updatedElements = selectedPageData.elements || [];
+      const updatedCode = selectedPageData.state || [];
+      const updatedCodeJs = selectedPageData.code; // Código generado
+
+      // Actualizar el estado del proyecto
       setProjectData(updatedProject);
 
       // Solo actualizar si los elementos son diferentes
       setDroppedElements(updatedElements);
       setWorkspaceState(updatedCode);
-      setBlockyCode(updateCodeJs);
+      setBlockyCode(updatedCodeJs);
     };
 
     // Escuchar el evento de actualización
@@ -126,7 +135,7 @@ const AppB = ({ modeScreen }) => {
     return () => {
       socket.off("project-updated", handleProjectUpdate);
     };
-  }, []); // Esto garantiza que solo se ejecuta si droppedElements cambia
+  }, [selectedPage]); // Esto garantiza que solo se ejecuta si droppedElements cambia
 
   useEffect(() => {
     const handlePageChange = ({ projectId, selectedPage: newSelectedPage }) => {
@@ -150,8 +159,8 @@ const AppB = ({ modeScreen }) => {
 
   const handlePreviewAndUpdate = async () => {
     try {
-      await handleUpdateProject();
       await handlePreview();
+      await handleUpdateProject();
     } catch (error) {
       console.error("Error durante el proceso:", error);
     }
@@ -160,15 +169,6 @@ const AppB = ({ modeScreen }) => {
   const handleUpdateProject = async () => {
     try {
       setLoading(true);
-
-      /*
-      console.log("projectData:", projectData);
-      console.log("selectedPage:", selectedPage);
-      console.log("Estado de droppedElements al llamar a onUpdate:", droppedElements);
-      console.log("blocklyCode:", blocklyCode);
-      console.log("workspaceState:", workspaceState);
-      */
-
       // Crear una copia del proyecto
       const updatedProject = { ...projectData };
 
@@ -178,7 +178,6 @@ const AppB = ({ modeScreen }) => {
       const selectedPageIndex = updatedProject.pages.findIndex(
         (page) => page.name === selectedPage
       );
-
       //console.log("selectedPageIndex:", selectedPageIndex);
 
       if (selectedPageIndex !== -1) {
@@ -195,10 +194,7 @@ const AppB = ({ modeScreen }) => {
       //console.log("Datos enviados al backend:", updatedProject);
 
       // Solicitud PUT
-      const response = await axios.put(
-        `${url}/projects/${id}`,
-        updatedProject
-      );
+      const response = await axios.put(`${url}/projects/${id}`, updatedProject);
       console.log("Proyecto actualizado:", response.data);
       setLoading(false);
     } catch (error) {
@@ -265,9 +261,7 @@ const AppB = ({ modeScreen }) => {
         <>
           <SidebarB setMode={setMode} />
           {mode === "code" ? (
-            <BlocklyComponent
-              onGenerateCode={handleGenerateCode}
-            />
+            <BlocklyComponent onGenerateCode={handleGenerateCode} />
           ) : (
             <div className="w-full h-full grid grid-cols-4">
               <LeftPanel />
@@ -299,10 +293,7 @@ const AppB = ({ modeScreen }) => {
         />
       )}
       {modeScreen === "partCentral" && (
-        <CentralPart
-          imgSelected={imgSelected}
-          modeOfPart="completepart"
-        />
+        <CentralPart imgSelected={imgSelected} modeOfPart="completepart" />
       )}
     </div>
   );
