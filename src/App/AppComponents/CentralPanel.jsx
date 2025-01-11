@@ -299,6 +299,36 @@ const CentralPanel = ({
     containerRef.current.style.cursor = "default";
   };
 
+  const handleStart = (e) => {
+    if (!isHandTool) return; // Solo permitir arrastre si la herramienta mano está activada
+    setIsDragging(true);
+    containerRef.current.style.cursor = "grabbing";
+  
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  
+    containerRef.current.startX = clientX - position.x;
+    containerRef.current.startY = clientY - position.y;
+  };
+  
+  const handleMove = (e) => {
+    if (!isDragging) return;
+  
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  
+    const newX = clientX - containerRef.current.startX;
+    const newY = clientY - containerRef.current.startY;
+  
+    setPosition({ x: newX, y: newY });
+  };
+  
+  const handleEnd = () => {
+    setIsDragging(false);
+    containerRef.current.style.cursor = "default";
+  };
+  
+
   // Alternar entre herramienta mano y mouse normal
   const toggleHandTool = () => setIsHandTool(true); // Activar la herramienta mano
   const toggleMouseTool = () => setIsHandTool(false); // Desactivar la herramienta mano
@@ -309,9 +339,9 @@ const CentralPanel = ({
       className="w-full h-screen max-h-screen min-h-screen overflow-hidden col-span-2 relative flex items-center justify-center"
       style={{ backgroundColor: backgroundColor }}
       onMouseMove={handleMouseMove}
-      onTouchMove={handleMouseMove}
+      onTouchMove={handleMove}
       onMouseUp={handleMouseUp}
-      onTouchEnd={handleMouseUp}
+      onTouchEnd={handleEnd}
       onMouseLeave={handleMouseUp} // Equivalente para evitar seguir arrastrando con el mouse
     >
       {/* Input y vista previa del color */}
@@ -397,6 +427,7 @@ const CentralPanel = ({
           top: `${position.y}px`,
         }}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleStart}
       >
         <div
           className="relative overflow-auto"
