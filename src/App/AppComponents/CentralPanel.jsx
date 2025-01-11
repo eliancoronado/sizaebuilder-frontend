@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 import axios from "axios";
 import useStore from "../store/store";
+import { Hand, MousePointer2  } from 'lucide-react';
 
 const CentralPanel = ({
   onUpdate,
@@ -263,11 +264,55 @@ const CentralPanel = ({
     onUpdate();
   }
 
+  const [scale, setScale] = useState(1.2);
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({
+    x: 0,
+    y: window.innerHeight / 2 - 466, // Centrado verticalmente
+  });
+  const [isHandTool, setIsHandTool] = useState(false); // Estado para la herramienta mano
+  const containerRef = useRef(null);
+
+  // Funciones para aumentar y disminuir la escala
+  const increaseScale = () => setScale((prev) => prev + 0.1); // Incremento libre
+  const decreaseScale = () =>
+    setScale((prev) => (prev > 0.1 ? prev - 0.1 : prev));
+
+  // Manejo de arrastre
+  const handleMouseDown = (e) => {
+    if (!isHandTool) return; // Solo permitir arrastre si la herramienta mano está activada
+    setIsDragging(true);
+    containerRef.current.style.cursor = "grabbing";
+    containerRef.current.startX = e.clientX - position.x;
+    containerRef.current.startY = e.clientY - position.y;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const newX = e.clientX - containerRef.current.startX;
+    const newY = e.clientY - containerRef.current.startY;
+    setPosition({ x: newX, y: newY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    containerRef.current.style.cursor = "default";
+  };
+
+  // Alternar entre herramienta mano y mouse normal
+  const toggleHandTool = () => setIsHandTool(true); // Activar la herramienta mano
+  const toggleMouseTool = () => setIsHandTool(false); // Desactivar la herramienta mano
+
   return (
     //Lo que este aqui deberia estar en un canvas para usar html canvas to png
     <div
       className="w-full h-screen max-h-screen min-h-screen overflow-hidden col-span-2 relative flex items-center justify-center"
       style={{ backgroundColor: backgroundColor }}
+      onMouseMove={handleMouseMove}
+      onTouchMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onTouchEnd={handleMouseUp}
+      onMouseLeave={handleMouseUp} // Equivalente para evitar seguir arrastrando con el mouse
     >
       {/* Input y vista previa del color */}
       <div className="absolute z-30 right-1 top-1 px-3 py-2 rounded flex items-center gap-2 bg-[#767676]">
@@ -303,7 +348,56 @@ const CentralPanel = ({
         Guardar
       </div>
 
-      <div className="scale-110 lg:scale-150" id="central">
+      {/* Botones para controlar la escala */}
+      <div className="absolute z-30 top-1 left-1/2 -translate-x-1/2 h-8 flex gap-1">
+        <button
+          onClick={decreaseScale}
+          className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] text-base rounded shadow font-semibold"
+        >
+          -
+        </button>
+        <button
+          onClick={increaseScale}
+          className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] text-base rounded shadow font-semibold"
+        >
+          +
+        </button>
+      </div>
+
+      {/* Botones para alternar herramientas */}
+      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        <button
+          onClick={toggleHandTool}
+          className={`p-1 ${
+            isHandTool ? "bg-blue-500" : "bg-gray-500"
+          } text-white rounded shadow hover:bg-blue-600 w-8 h-8`}
+        >
+          <Hand />
+        </button>
+        <button
+          onClick={toggleMouseTool}
+          className={`p-1 w-8 h-8 ${
+            !isHandTool ? "bg-blue-500" : "bg-gray-500"
+          } text-white rounded shadow hover:bg-blue-600`}
+        >
+          <MousePointer2 />
+        </button>
+      </div>
+
+      <div
+        id="central"
+        ref={containerRef}
+        className="absolute"
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: "center",
+          transition: isDragging ? "none" : "transform 0.2s ease-in-out",
+          cursor: isHandTool ? "grab" : "auto", // Cambiar el cursor según la herramienta
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+        }}
+        onMouseDown={handleMouseDown}
+      >
         <div
           className="relative overflow-auto"
           onDrop={(e) => handleDrop(e)}
@@ -318,6 +412,7 @@ const CentralPanel = ({
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)", // Sombra para dar un efecto más realista
             backgroundColor: "#fff", // Color de fondo blanco
             boxSizing: "border-box",
+            pointerEvents: isHandTool ? "none" : "auto",
           }}
         >
           {droppedElements.map((element) => renderElement(element))}
