@@ -423,7 +423,7 @@ const DashLayout = ({ url }) => {
                 updateProjectName(e, editingProjectId);
               }}
             >
-              Save changes
+              Guardar cambios
             </Button>
           </DialogFooter>
         </DialogContent>

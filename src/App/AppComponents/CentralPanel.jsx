@@ -2,7 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 import axios from "axios";
 import useStore from "../store/store";
-import { Hand, MousePointer2  } from 'lucide-react';
+import { Hand, MousePointer2 } from "lucide-react";
+import { RxDotsVertical } from "react-icons/rx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { QRCodeCanvas } from "qrcode.react";
+import { Button } from "@/components/ui/button";
 
 const CentralPanel = ({
   onUpdate,
@@ -16,6 +34,7 @@ const CentralPanel = ({
   const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPageName, setNewPageName] = useState("");
+  const [qrcode, setQrCode] = useState(false);
 
   const {
     projectData: project,
@@ -268,7 +287,7 @@ const CentralPanel = ({
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
     x: 0,
-    y: window.innerHeight / 2 - 466, // Centrado verticalmente
+    y: 0, // Centrado verticalmente
   });
   const [isHandTool, setIsHandTool] = useState(false); // Estado para la herramienta mano
   const containerRef = useRef(null);
@@ -303,31 +322,30 @@ const CentralPanel = ({
     if (!isHandTool) return; // Solo permitir arrastre si la herramienta mano está activada
     setIsDragging(true);
     containerRef.current.style.cursor = "grabbing";
-  
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  
+
     containerRef.current.startX = clientX - position.x;
     containerRef.current.startY = clientY - position.y;
   };
-  
+
   const handleMove = (e) => {
     if (!isDragging) return;
-  
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  
+
     const newX = clientX - containerRef.current.startX;
     const newY = clientY - containerRef.current.startY;
-  
+
     setPosition({ x: newX, y: newY });
   };
-  
+
   const handleEnd = () => {
     setIsDragging(false);
     containerRef.current.style.cursor = "default";
   };
-  
 
   // Alternar entre herramienta mano y mouse normal
   const toggleHandTool = () => setIsHandTool(true); // Activar la herramienta mano
@@ -359,27 +377,44 @@ const CentralPanel = ({
         />
       </div>
 
-      <div
-        className="absolute z-30 top-1 left-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
-        onClick={() => setModalOpen(true)}
-      >
-        Añadir Pagina
-      </div>
-      <div
-        className="absolute z-30 bottom-1 right-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
-        onClick={() => onDownload()}
-      >
-        Exportar
-      </div>
-      <div
-        className="absolute z-30 bottom-1 left-1 bg-[#9A4DFF] px-3 py-2 cursor-pointer rounded text-base text-[#2D2D2D] font-semibold"
-        onClick={handleSave}
-      >
-        Guardar
-      </div>
+      {qrcode && (
+        <Card className="p-2 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-40">
+          <CardHeader>
+            <CardTitle>Escanea el QR</CardTitle>
+            <CardDescription>
+              Tendras una vista previa de tu proyecto
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <QRCodeCanvas
+              value={`https://sizaebuilder-backend.onrender.com/dist/${id}/index.html`} // URL de la vista previa
+              size={200}
+              bgColor={"#ffffff"}
+              fgColor={"#000000"}
+              level={"H"}
+              includeMargin={true}
+            />
+          </CardContent>
+          <CardFooter className="flex items-center justify-end gap-2">
+            <Button
+              onClick={() => {
+                navigator.clipboard
+                  .writeText(
+                    `https://sizaebuilder-backend.onrender.com/dist/${id}/index.html`
+                  )
+                  .then(() => console.log("URL copiada al portapapeles"))
+                  .catch((err) => alert("Error al copiar la URL: " + err));
+              }}
+            >
+              Copiar URL
+            </Button>
+            <Button onClick={() => setQrCode(false)}>Cancelar</Button>
+          </CardFooter>
+        </Card>
+      )}
 
       {/* Botones para controlar la escala */}
-      <div className="absolute z-30 top-1 left-1/2 -translate-x-1/2 h-8 flex gap-1">
+      <div className="absolute z-30 top-1 left-1 h-8 flex gap-1">
         <button
           onClick={decreaseScale}
           className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] text-base rounded shadow font-semibold"
@@ -392,6 +427,30 @@ const CentralPanel = ({
         >
           +
         </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              //onClick={increaseScale}
+              className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] rounded shadow font-semibold"
+            >
+              <RxDotsVertical className="text-sm" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => setModalOpen(true)}>
+                Nueva Página
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSave}>Guardar</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setQrCode(true)}>
+                Abrir link dev
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onDownload()}>
+                Exportar
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Botones para alternar herramientas */}
@@ -417,7 +476,7 @@ const CentralPanel = ({
       <div
         id="central"
         ref={containerRef}
-        className="absolute"
+        className="absolute flex items-center justify-center h-full w-full"
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center",
