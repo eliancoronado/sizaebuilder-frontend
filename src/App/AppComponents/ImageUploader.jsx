@@ -50,15 +50,15 @@ const ImageUploader = ({ imgSelected, setImgSelected, url }) => {
 
   return (
     <div className="w-full">
-      <h2 className="text-[#F5F5F5] text-xl font-medium">Subir Imágenes</h2>
+      <h2 className="text-[#FFC700] text-xl font-medium">Subir Imágenes</h2>
       <input
         type="file"
         accept="image/*"
         onChange={handleImageUpload}
-        className="mt-4 w-full text-white"
+        className="mt-4 w-full text-[#FFC700]"
       />
       <div style={{ marginTop: "20px" }}>
-        <h3 className="text-[#F5F5F5] text-lg font-medium">
+        <h3 className="text-[#FFC700] text-lg font-medium">
           Imágenes Subidas:
         </h3>
         <div className="w-full grid grid-cols-3 gap-2 p-2 mt-2">

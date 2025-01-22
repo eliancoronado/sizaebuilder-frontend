@@ -30,8 +30,8 @@ const CentralPanel = ({
   contextMenu,
   setContextMenu,
 }) => {
-  const [color, setColor] = useState("ffffff"); // Estado inicial del color
-  const [backgroundColor, setBackgroundColor] = useState("#ffffff"); // Color aplicado
+  const [color, setColor] = useState("dfdfdf"); // Estado inicial del color
+  const [backgroundColor, setBackgroundColor] = useState("#dfdfdf"); // Color aplicado
   const [isModalOpen, setModalOpen] = useState(false);
   const [newPageName, setNewPageName] = useState("");
   const [qrcode, setQrCode] = useState(false);
@@ -47,6 +47,9 @@ const CentralPanel = ({
     draggingElement,
     setDraggingElement,
   } = useStore(); // Usamos los métodos del store para actualizar el estado
+  const [widthDevice, setWithDevice] = useState("1366px");
+  const [heightDevice, setHeightDevice] = useState("768px");
+  const [dpi, setDpi] = useState("0.7");
 
   useEffect(() => {
     if (imgSelected) {
@@ -417,21 +420,20 @@ const CentralPanel = ({
       <div className="absolute z-30 top-1 left-1 h-8 flex gap-1">
         <button
           onClick={decreaseScale}
-          className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] text-base rounded shadow font-semibold"
+          className="bg-[#5A4A78] w-8 z-30 flex items-center justify-center text-[#FFD966] text-base rounded shadow font-semibold"
         >
           -
         </button>
         <button
           onClick={increaseScale}
-          className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] text-base rounded shadow font-semibold"
+          className="bg-[#5A4A78] w-8 z-30 flex items-center justify-center text-[#FFD966] text-base rounded shadow font-semibold"
         >
           +
         </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              //onClick={increaseScale}
-              className="bg-[#9A4DFF] w-8 z-30 flex items-center justify-center text-[#2D2D2D] rounded shadow font-semibold"
+              className="bg-[#5A4A78] w-8 z-30 flex items-center justify-center text-[#FFD966] rounded shadow font-semibold"
             >
               <RxDotsVertical className="text-sm" />
             </button>
@@ -440,6 +442,28 @@ const CentralPanel = ({
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => setModalOpen(true)}>
                 Nueva Página
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (widthDevice === "1366px") {
+                    setWithDevice("430px");
+                  } else {
+                    setWithDevice("1366px");
+                  }
+                  if (heightDevice === "768px") {
+                    setHeightDevice("932px");
+                  } else {
+                    setHeightDevice("768px");
+                  }
+                  if (dpi === "0.7") {
+                    setDpi("0.33");
+                  } else {
+                    setDpi("0.7");
+                  }
+                  setPosition({ x: 0, y: 0 })
+                }}
+              >
+                Modo {widthDevice === "1366px" ? "Telefono" : "Computadora"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSave}>Guardar</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setQrCode(true)}>
@@ -476,8 +500,10 @@ const CentralPanel = ({
       <div
         id="central"
         ref={containerRef}
-        className="absolute flex items-center justify-center h-full w-full"
+        className="absolute flex items-center justify-center w-auto h-auto"
         style={{
+          width: `${widthDevice}`,
+          height: `${heightDevice}`,
           transform: `scale(${scale})`,
           transformOrigin: "center",
           transition: isDragging ? "none" : "transform 0.2s ease-in-out",
@@ -489,15 +515,15 @@ const CentralPanel = ({
         onTouchStart={handleStart}
       >
         <div
-          className="relative overflow-auto"
+          className="relative overflow-hidden h-full w-full"
           onDrop={(e) => handleDrop(e)}
           onTouchEnd={(e) => handleDrop(e)}
           onDragOver={handleDragOver}
           onTouchMove={handleTouchMove}
           style={{
-            width: "430px", // Resolución original del iPhone 14 Pro Max
-            height: "932px",
-            transform: "scale(0.33)",
+            width: `${widthDevice}`,
+            height: `${heightDevice}`,
+            transform: `scale(${dpi})`,
             borderRadius: "20px", // Bordes redondeados para simular el aspecto de un teléfono
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)", // Sombra para dar un efecto más realista
             backgroundColor: "#fff", // Color de fondo blanco

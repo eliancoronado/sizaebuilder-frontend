@@ -251,7 +251,7 @@ const AppB = ({ modeScreen }) => {
   };
 
   return (
-    <div className="w-full h-screen flex items-center relative">
+    <div className="w-full h-screen flex items-center relative bg-white">
       {loading && (
         <div className="z-10 w-full h-full top-0 left-0 absolute flex items-center justify-center bg-opacity-10 backdrop-blur-sm bg-black">
           <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>

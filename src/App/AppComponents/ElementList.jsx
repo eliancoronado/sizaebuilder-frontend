@@ -6,19 +6,19 @@ import { RxInput } from "react-icons/rx";
 const getElementIcon = (name) => {
   switch (name) {
     case 'Text':
-      return <MdOutlineTextFields className="text-xl text-[#4F4F4F]" />;
+      return <MdOutlineTextFields className="text-xl text-[#FFD966]" />;
     case 'Container':
-      return <FaBox className="text-xl text-[#4F4F4F]" />;
+      return <FaBox className="text-xl text-[#FFD966]" />;
     case 'Image':
-      return <FaImage className="text-xl text-[#4F4F4F]" />;
+      return <FaImage className="text-xl text-[#FFD966]" />;
     case 'Input':
-      return <RxInput className="text-xl text-[#4F4F4F]" />;
+      return <RxInput className="text-xl text-[#FFD966]" />;
     case 'Button':
-      return <FaRegSquare className="text-xl text-[#4F4F4F]" />;
+      return <FaRegSquare className="text-xl text-[#FFD966]" />;
     case 'Icon':
-      return <MdOutlineInsertEmoticon className="text-xl text-[#4F4F4F]" />;
+      return <MdOutlineInsertEmoticon className="text-xl text-[#FFD966]" />;
     default:
-      return <FaCode className="text-xl text-[#4F4F4F]" />;
+      return <FaCode className="text-xl text-[#FFD966]" />;
   }
 };
 
@@ -33,7 +33,7 @@ const ElementTree = ({ element,setSelectedElement, level = 0 }) => {
         }}
       >
         {getElementIcon(element.name)}
-        <span className="text-sm font-semibold text-[#4F4F4F]">{element.name}</span>
+        <span className="text-sm font-semibold text-[#FFD966]">{element.name}</span>
       </div>
       {element.children && element.children.length > 0 && (
         <div className="pl-4">
@@ -49,7 +49,7 @@ const ElementTree = ({ element,setSelectedElement, level = 0 }) => {
 const ElementList = ({ elements, setSelectedElement }) => {
   return (
     <div className="w-full h-full max-w-full overflow-x-auto overflow-y-auto">
-      <h2 className="text-[#F5F5F5] text-xl mb-3 font-medium">Elementos</h2>
+      <h2 className="text-[#FFC700] text-xl mb-3 font-medium">Elementos</h2>
       {elements.map((element) => (
         <ElementTree key={element.id} element={element} setSelectedElement={setSelectedElement} />
       ))}

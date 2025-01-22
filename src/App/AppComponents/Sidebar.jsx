@@ -14,7 +14,7 @@ const SidebarB = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-[80px] h-full bg-[#9A4DFF] hidden md:flex md:flex-col md:items-center md:py-2 lg:py-4 md:justify-between">
+    <div className="w-[80px] h-full bg-[#5A4A78] hidden md:flex md:flex-col md:items-center md:py-2 lg:py-4 md:justify-between">
       <div className="w-full flex flex-col items-center">
         <img
           src={logo}
@@ -25,25 +25,25 @@ const SidebarB = () => {
           className="w-full py-4 cursor-pointer hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center mt-8"
           onClick={() => setMode("elements")}
         >
-          <IoMdAddCircleOutline className="text-3xl text-[#2D2D2D]" />
+          <IoMdAddCircleOutline className="text-3xl text-[#FFD966]" />
         </div>
         <div
           className="w-full py-4 cursor-pointer hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center"
           onClick={() => setMode("capas")}
         >
-          <LuLayers className="text-2xl text-[#2D2D2D]" />
+          <LuLayers className="text-2xl text-[#FFD966]" />
         </div>
         <div
           className="w-full py-4 cursor-pointer hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center"
           onClick={() => setMode("files")}
         >
-          <FaRegImages className="text-2xl text-[#2D2D2D]" />
+          <FaRegImages className="text-2xl text-[#FFD966]" />
         </div>
         <div
           className="w-full py-4 cursor-pointer hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center"
           onClick={() => setMode("code")}
         >
-          <FaCode className="text-2xl text-[#2D2D2D]" />
+          <FaCode className="text-2xl text-[#FFD966]" />
         </div>
       </div>
     </div>
