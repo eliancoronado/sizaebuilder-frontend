@@ -32,6 +32,7 @@ import {
   MdBorderLeft,
   MdBorderRight,
 } from "react-icons/md";
+import { BiSolidHide } from "react-icons/bi";
 import useStore from "../store/store";
 
 const RightPanel = ({
@@ -262,7 +263,7 @@ const RightPanel = ({
               </h3>
             </div>
 
-            <div className="w-full h-auto grid grid-cols-2 grid-rows-3 gap-2">
+            <div className="w-full h-auto grid grid-cols-2 grid-rows-4 gap-2">
               <div className="mt-2 flex flex-col gap-2 col-span-2">
                 <select
                   className="w-full h-8 rounded border border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none"
@@ -384,6 +385,17 @@ const RightPanel = ({
                     <option value="row-reverse">Fila invertida</option>
                   </select>
                 )}
+              </div>
+              <div
+                className={`mt-2 row-start-4 text-sm gap-2 text-[#C3C3C3] h-8 flex items-center justify-center rounded-md col-span-2 cursor-pointer bg-[#555555] ${
+                  selectedElement.styles.overflow === "hidden"
+                    ? "bg-[#2C2C2C] border-[2px] border-[#444444]"
+                    : ""
+                }`}
+                onClick={() => handleStyleChange("overflow", "hidden")}
+              >
+                <BiSolidHide className="text-xl text-[#C3C3C3]" /> 
+                Ocultar elementos si se salen
               </div>
             </div>
 

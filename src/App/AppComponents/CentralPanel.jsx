@@ -167,6 +167,7 @@ const CentralPanel = ({
         justifyContent: "start", // Valor predeterminado
         gap: "",
         position: "static",
+        overflow: "auto",
         top: "0px",
         bottom: "0px",
         left: "0px",
@@ -286,14 +287,18 @@ const CentralPanel = ({
     onUpdate();
   }
 
-  const [scale, setScale] = useState(1.2);
+  const [scale, setScale] = useState(0.6);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
-    x: 0,
-    y: 0, // Centrado verticalmente
+    x: -383,
+    y: -72, // Centrado verticalmente
   });
   const [isHandTool, setIsHandTool] = useState(false); // Estado para la herramienta mano
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    console.log(position);
+  }, [position]);
 
   // Funciones para aumentar y disminuir la escala
   const increaseScale = () => setScale((prev) => prev + 0.1); // Incremento libre
@@ -432,9 +437,7 @@ const CentralPanel = ({
         </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
-              className="bg-[#5A4A78] w-8 z-30 flex items-center justify-center text-[#FFD966] rounded shadow font-semibold"
-            >
+            <button className="bg-[#5A4A78] w-8 z-30 flex items-center justify-center text-[#FFD966] rounded shadow font-semibold">
               <RxDotsVertical className="text-sm" />
             </button>
           </DropdownMenuTrigger>
@@ -447,20 +450,26 @@ const CentralPanel = ({
                 onClick={() => {
                   if (widthDevice === "1366px") {
                     setWithDevice("430px");
+                    setPosition({ x: 83, y: -183 });
+                    setScale(0.8);
                   } else {
                     setWithDevice("1366px");
+                    setScale(0.6);
+                    setPosition({ 
+                      x: -383,
+                      y: -72, // Centrado verticalmente
+                    });
                   }
                   if (heightDevice === "768px") {
                     setHeightDevice("932px");
                   } else {
                     setHeightDevice("768px");
                   }
-                  if (dpi === "0.7") {
+                  if (dpi === "0.6") {
                     setDpi("0.33");
                   } else {
                     setDpi("0.7");
                   }
-                  setPosition({ x: 0, y: 0 })
                 }}
               >
                 Modo {widthDevice === "1366px" ? "Telefono" : "Computadora"}

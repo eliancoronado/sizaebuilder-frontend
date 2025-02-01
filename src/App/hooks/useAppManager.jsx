@@ -199,6 +199,7 @@ const useAppManager = () => {
         justifyContent: "start", // Valor predeterminado
         gap: "",
         position: "static",
+        overflow: "auto",
         top: "0px",
         bottom: "0px",
         left: "0px",
