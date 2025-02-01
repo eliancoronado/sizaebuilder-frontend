@@ -20,7 +20,15 @@ const BlocklyComponent = ({ onGenerateCode }) => {
             <category name="Funciones" colour="#9A5CA6">
               <block type="dynamic_dropdown"></block>
               <block type="show_alert"></block>
+              <block type="fetch_request_block"></block>
+              <block type="parse_json_block"></block>
+              <block type="async_function_block"></block>
+              <block type="call_async_function_block"></block>
               <block type="go_to_screen"></block>
+              <block type="append_child_block"></block>
+              <block type="change_inner_html"></block>
+              <block type="create_image_block"></block>
+              <block type="console_log_block"></block>
               <block type="const_declare"></block>
               <block type="var_declare"></block>
               <block type="const_use"></block>
@@ -126,29 +134,130 @@ const BlocklyComponent = ({ onGenerateCode }) => {
     return `document.getElementById("${elementId}").addEventListener("click", () => {\n${statementsDo}});\n`;
   };
 
+  javascriptGenerator.forBlock["change_inner_html"] = function (block) {
+    const elementId = block.getFieldValue("DAY") || "NONE";
+    const value =
+      javascriptGenerator.valueToCode(block, "VALUE", Order.ASSIGNMENT) || "''"; // Si no hay valor, usa una cadena vacía
+
+    if (elementId === "NONE") {
+      return "// No element selected.\n";
+    }
+
+    return `document.getElementById("${elementId}").innerHTML = ${value};\n`;
+  };
+
+  javascriptGenerator.forBlock["append_child_block"] = function (block) {
+    const elementId = block.getFieldValue("DAY"); // Obtener el ID del elemento donde se va a agregar el hijo
+    const childElement =
+      javascriptGenerator.valueToCode(block, "ELEMENT", Order.ATOMIC) || "null"; // Obtener el bloque o valor para el hijo
+
+    if (elementId === "NONE") {
+      return "// No element selected.\n";
+    }
+
+    return `document.getElementById("${elementId}").appendChild(${childElement});\n`;
+  };
+
   javascriptGenerator.forBlock["get_text_input_value"] = function (block) {
     // Obtener el valor del campo desplegable (ID seleccionado)
     const id = block.getFieldValue("DAY") || "default";
-  
+
     // Generar el código JavaScript
     const code = `document.getElementById("${id}").value`;
-  
+
     // Retornar el código
     return [code, Order.ATOMIC];
   };
 
   javascriptGenerator.forBlock["equality_block"] = function (block) {
     // Obtener los valores conectados a las entradas
-    const left = javascriptGenerator.valueToCode(block, "LEFT", Order.ATOMIC) || "null";
-    const right = javascriptGenerator.valueToCode(block, "RIGHT", Order.ATOMIC) || "null";
-  
+    const left =
+      javascriptGenerator.valueToCode(block, "LEFT", Order.ATOMIC) || "null";
+    const right =
+      javascriptGenerator.valueToCode(block, "RIGHT", Order.ATOMIC) || "null";
+
     // Generar el código de comparación
     const code = `${left} === ${right}`;
-  
+
     // Retornar el código generado
     return [code, Order.EQUALITY];
   };
-  
+
+  javascriptGenerator.forBlock["fetch_request_block"] = function (block) {
+    const varName = block.getFieldValue("VAR_NAME") || "response"; // Nombre de la variable
+    const url = block.getFieldValue("URL"); // URL ingresada
+    const method = block.getFieldValue("METHOD"); // Método (GET o POST)
+    const headersType = block.getFieldValue("HEADERS"); // Tipo de header
+    const body =
+      javascriptGenerator.valueToCode(
+        block,
+        "BODY",
+        javascriptGenerator.ORDER_ATOMIC
+      ) || "null"; // Body del request
+
+    // Construcción del objeto de opciones para fetch
+    let fetchOptions = `{
+        method: "${method}",
+        headers: {
+            "Content-Type": "${headersType}"
+        }`;
+
+    if (method === "POST") {
+      fetchOptions += `,
+        body: ${body}`;
+    }
+
+    fetchOptions += `\n    }`;
+
+    // Generar código final de fetch sin console.log ni data
+    return `const ${varName} = await fetch("${url}", ${fetchOptions});\n`;
+  };
+
+  javascriptGenerator.forBlock["console_log_block"] = function (block) {
+    const value =
+      javascriptGenerator.valueToCode(
+        block,
+        "VALUE",
+        javascriptGenerator.ORDER_ATOMIC
+      ) || "''"; // Si no hay valor, usa una cadena vacía
+    return `console.log(${value});\n`;
+  };
+
+  javascriptGenerator.forBlock["create_image_block"] = function (block) {
+    const srcValue =
+      javascriptGenerator.valueToCode(block, "SRC", Order.ATOMIC) || "''";
+
+    // Crear una función autoejecutable para devolver el elemento
+    const code = `(function() {
+      const imgElement = document.createElement("img");
+      imgElement.src = ${srcValue};
+      return imgElement;
+    })()`;
+
+    return [code, Order.NONE]; // Devolver una tupla válida
+  };
+
+  javascriptGenerator.forBlock["parse_json_block"] = function (block) {
+    const dataVar = block.getFieldValue("DATA_VAR") || "data"; // Nombre de la variable para guardar el JSON
+    const responseVar = block.getFieldValue("RESPONSE_VAR") || "response"; // Nombre de la variable de la respuesta
+
+    return `const ${dataVar} = await ${responseVar}.json();\n`;
+  };
+
+  javascriptGenerator.forBlock["call_async_function_block"] = function (block) {
+    const funcName = block.getFieldValue("FUNC_NAME"); // Obtiene el nombre de la función
+
+    // Devuelve el código para llamar a la función async
+    return `${funcName}();\n`;
+  };
+
+  javascriptGenerator.forBlock["async_function_block"] = function (block) {
+    const funcName = block.getFieldValue("FUNC_NAME"); // Obtiene el nombre de la función
+    const code = javascriptGenerator.statementToCode(block, "CODE"); // Obtiene el código dentro de la función
+
+    // Devuelve el código JavaScript para crear la función async
+    return `async function ${funcName}() {\n${code}\n}\n`;
+  };
 
   javascriptGenerator.forBlock["if_else_block"] = function (block) {
     // Obtener el código de la condición
@@ -342,7 +451,7 @@ const BlocklyComponent = ({ onGenerateCode }) => {
 
   return (
     <div className="relative w-full h-screen">
-      <div ref={blocklyDiv} className="w-full h-full"></div>
+      <div ref={blocklyDiv} className="w-full h-full text-black"></div>
       <button
         onClick={generateCode}
         className="absolute top-2 right-2 px-4 py-2 bg-blue-400 text-white rounded-3xl"

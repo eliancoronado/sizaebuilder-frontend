@@ -203,33 +203,33 @@ const DashLayout = ({ url }) => {
   }
 
   return (
-    <div className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-card text-gray-900">
+    <div className="flex-1 h-screen max-h-screen thin-scroll flex flex-col bg-gray-900 text-white">
       {/* Header */}
-      <header className="w-full h-[12vh] flex items-center justify-between px-6 bg-card shadow-md">
+      <header className="w-full h-[12vh] flex items-center justify-between px-6 bg-gray-800 shadow-lg">
         <h1 className="text-2xl font-bold text-white">Proyectos</h1>
         <div className="flex items-center gap-6">
           {/* Search Bar */}
-          <div className="relative hidden sm:flex items-center bg-muted rounded-md px-4 py-1.5 shadow-sm">
+          <div className="relative hidden sm:flex items-center bg-gray-700 rounded-md px-4 py-1.5 shadow-sm">
             <input
               type="text"
               placeholder="Search projects..."
-              className="bg-transparent text-[#858485] outline-none text-sm flex-1"
+              className="bg-transparent text-gray-300 outline-none text-sm flex-1"
             />
-            <FaSearch className="text-[#858485] text-sm" />
+            <FaSearch className="text-gray-300 text-sm" />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="text-sidebar-accent-foreground text-white sm:flex hidden"
+                className="text-white sm:flex hidden bg-gray-700 hover:bg-gray-600"
               >
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg bg-transparent border border-muted">
+                  <AvatarFallback className="rounded-lg bg-transparent border border-gray-600">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tigh text-white">
+                <div className="grid flex-1 text-left text-sm leading-tight text-white">
                   <span className="truncate font-semibold">
                     {user.username}
                   </span>
@@ -237,12 +237,13 @@ const DashLayout = ({ url }) => {
                 <ChevronsUpDown className="ml-auto size-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
+            <DropdownMenuContent className="w-56 bg-gray-800 border-gray-700">
               <DropdownMenuItem
                 onClick={() => {
                   navigate("/login");
                   localStorage.removeItem("user");
                 }}
+                className="text-white hover:bg-gray-700"
               >
                 <LogOut />
                 Log out
@@ -257,31 +258,41 @@ const DashLayout = ({ url }) => {
       </header>
 
       {/* Sub-header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-card">
-        <p className="text-sm font-normal text-white">
+      <div className="flex items-center justify-between px-6 py-4 bg-gray-800">
+        <p className="text-sm font-normal text-gray-300">
           Todos tus proyectos ({userProjects.length})
         </p>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button onClick={toggleDropdown}>
+            <Button
+              onClick={toggleDropdown}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               <PackagePlus /> Crear proyecto
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent className="w-56 bg-gray-800 border-gray-700">
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={createNewProject}>
+              <DropdownMenuItem
+                onClick={createNewProject}
+                className="text-white hover:bg-gray-700"
+              >
                 Crear proyecto mobile
               </DropdownMenuItem>
-              <DropdownMenuItem>...</DropdownMenuItem>
-              <DropdownMenuItem>...</DropdownMenuItem>
+              <DropdownMenuItem className="text-white hover:bg-gray-700">
+                ...
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-white hover:bg-gray-700">
+                ...
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 px-6 py-4 overflow-y-auto">
+      <main className="flex-1 px-6 py-4 overflow-y-auto bg-gray-900">
         {userProjects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {userProjects.map((up) => (
@@ -289,12 +300,11 @@ const DashLayout = ({ url }) => {
                 <ContextMenuTrigger>
                   <div
                     key={up._id}
-                    //onContextMenu={(e) => handleContextMenu(e, up._id)}
                     onClick={() => navigate(`/project/${up._id}`)}
-                    className="bg-transparent hover:shadow-lg transition duration-300 cursor-pointer flex flex-col"
+                    className="bg-gray-800 hover:bg-gray-700 transition duration-300 cursor-pointer flex flex-col rounded-lg shadow-lg"
                   >
                     {/* Card Image */}
-                    <div className="h-48 bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
+                    <div className="h-48 bg-gray-700 rounded-t-lg overflow-hidden flex items-center justify-center">
                       <img
                         src={`${url}/images/${up._id}.png`}
                         alt="Preview"
@@ -315,11 +325,11 @@ const DashLayout = ({ url }) => {
                       </p>
                     </div>
                     {/* Card Content */}
-                    <div className="py-1 pl-0.5 pb-2">
+                    <div className="py-3 pl-3 pb-3">
                       <h3 className="text-base font-semibold truncate text-white">
                         {up.name}
                       </h3>
-                      <p className="text-sm text-[#BFBFBF]">
+                      <p className="text-sm text-gray-400">
                         {formatDistanceToNow(new Date(up.createdAt), {
                           addSuffix: true,
                         })}
@@ -327,22 +337,25 @@ const DashLayout = ({ url }) => {
                     </div>
                   </div>
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-64">
+                <ContextMenuContent className="w-64 bg-gray-800 border-gray-700">
                   <ContextMenuItem
                     inset
                     onClick={(e) => handleMenuClick(e, "open", up._id)}
+                    className="text-white hover:bg-gray-700"
                   >
                     Abrir
                   </ContextMenuItem>
                   <ContextMenuItem
                     inset
                     onClick={(e) => handleMenuClick(e, "openleft", up._id)}
+                    className="text-white hover:bg-gray-700"
                   >
                     Abrir izquierdo
                   </ContextMenuItem>
                   <ContextMenuItem
                     inset
                     onClick={(e) => handleMenuClick(e, "opencentral", up._id)}
+                    className="text-white hover:bg-gray-700"
                   >
                     Abrir central
                   </ContextMenuItem>
@@ -352,6 +365,7 @@ const DashLayout = ({ url }) => {
                     onClick={(e) => {
                       handleMenuClick(e, "rename", up._id);
                     }}
+                    className="text-white hover:bg-gray-700"
                   >
                     Renombrar
                   </ContextMenuItem>
@@ -359,6 +373,7 @@ const DashLayout = ({ url }) => {
                   <ContextMenuItem
                     inset
                     onClick={(e) => handleMenuClick(e, "delete", up._id)}
+                    className="text-white hover:bg-gray-700"
                   >
                     Borrar
                   </ContextMenuItem>
@@ -367,7 +382,7 @@ const DashLayout = ({ url }) => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500 text-lg">
+          <p className="text-center text-gray-400 text-lg">
             No projects found. Start by creating a new one!
           </p>
         )}
@@ -384,21 +399,22 @@ const DashLayout = ({ url }) => {
               {/* Contenido aquí */}
             </div>
           </ContextMenuTrigger>
-          <ContextMenuContent>
+          <ContextMenuContent className="bg-gray-800 border-gray-700">
             <ContextMenuItem
               onClick={() => {
                 console.log("Opening modal");
                 setIsModalOpen(true);
               }}
+              className="text-white hover:bg-gray-700"
             >
               Abrir Modal
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
-        <DialogContent>
+        <DialogContent className="bg-gray-800 border-gray-700 text-white">
           <DialogHeader>
             <DialogTitle>Cambiar el nombre del proyecto</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-gray-400">
               Escribe un nuevo nombre para el proyecto
             </DialogDescription>
           </DialogHeader>
@@ -412,6 +428,7 @@ const DashLayout = ({ url }) => {
                 placeholder="Nuevo nombre"
                 value={newProjectName}
                 onChange={(e) => setNewProjectName(e.target.value)}
+                className="bg-gray-700 text-white border-gray-600"
               />
             </div>
           </div>
@@ -422,6 +439,7 @@ const DashLayout = ({ url }) => {
                 closeModal();
                 updateProjectName(e, editingProjectId);
               }}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               Guardar cambios
             </Button>
@@ -438,7 +456,7 @@ const DashLayout = ({ url }) => {
 
       {isModalUserOpen && (
         <div
-          className="absolute top-[12vh] right-2 z-50 bg-white shadow-md rounded-md p-2"
+          className="absolute top-[12vh] right-2 z-50 bg-gray-800 shadow-md rounded-md p-2"
           onMouseLeave={() => setIsModalUserOpen(false)}
         >
           <button
@@ -446,7 +464,7 @@ const DashLayout = ({ url }) => {
               localStorage.removeItem("user");
               navigate("/login");
             }}
-            className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
+            className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-700"
           >
             Cerrar Sesión
           </button>
@@ -457,7 +475,7 @@ const DashLayout = ({ url }) => {
       {sidebarOpen && (
         <DropdownMenu>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-            <div className="w-72 bg-secondary h-full shadow-lg place-self-end px-5 py-8">
+            <div className="w-72 bg-gray-800 h-full shadow-lg place-self-end px-5 py-8">
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-white">Sizae</h1>
                 <button
@@ -470,15 +488,15 @@ const DashLayout = ({ url }) => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="text-sidebar-accent-foreground text-white mt-5 py-6 w-full"
+                  className="text-white mt-5 py-6 w-full bg-gray-700 hover:bg-gray-600"
                 >
                   <Avatar className="h-14 w-14 rounded-lg">
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg bg-transparent border border-muted text-xl">
+                    <AvatarFallback className="rounded-lg bg-transparent border border-gray-600 text-xl">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tigh text-white">
+                  <div className="grid flex-1 text-left text-sm leading-tight text-white">
                     <span className="truncate font-semibold text-base">
                       {user.username}
                     </span>
@@ -486,12 +504,13 @@ const DashLayout = ({ url }) => {
                   <ChevronsUpDown className="ml-auto size-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
+              <DropdownMenuContent className="w-56 bg-gray-800 border-gray-700">
                 <DropdownMenuItem
                   onClick={() => {
                     navigate("/login");
                     localStorage.removeItem("user");
                   }}
+                  className="text-white hover:bg-gray-700"
                 >
                   <LogOut />
                   Log out

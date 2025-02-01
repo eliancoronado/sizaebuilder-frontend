@@ -15,6 +15,47 @@ export const bloques = [
     extensions: ["dynamic_menu_extension"],
   },
   {
+    type: "change_inner_html",
+    message0: "cambiar contenido de %1 a %2",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "INPUT",
+      },
+      {
+        type: "input_value",
+        name: "VALUE",
+      },
+    ],
+    extensions: ["dynamic_menu_extension"], // Para seleccionar elementos dinámicamente
+    previousStatement: null,
+    nextStatement: null,
+    colour: 230,
+    tooltip: "Cambia el contenido HTML de un elemento.",
+    helpUrl: "",
+  },
+  {
+    type: "append_child_block",
+    message0: "Agregar hijo al elemento %1 con el contenido %2",
+    args0: [
+      {
+        type: "input_dummy",
+        name: "INPUT",
+      },
+      {
+        type: "input_value",
+        name: "ELEMENT",
+        check: "String",
+      },
+    ],
+    extensions: ["dynamic_menu_extension"],
+    previousStatement: "Action",
+    nextStatement: "Action",
+    colour: 230,
+    tooltip: "Agrega un elemento hijo al elemento seleccionado por ID.",
+    helpUrl: "",
+  },
+  {
     type: "get_text_input_value",
     message0: "campo %1 valor",
     args0: [
@@ -197,7 +238,7 @@ export const bloques = [
     colour: 230,
     tooltip: "Declara una variable con var y le asigna un valor.",
     helpUrl: "",
-  },  
+  },
   {
     type: "var_change",
     message0: "%1 = %2",
@@ -217,7 +258,7 @@ export const bloques = [
     colour: 230,
     tooltip: "Declara una variable con var y le asigna un valor.",
     helpUrl: "",
-  },  
+  },
   {
     type: "var_plus",
     message0: "%1 + %2",
@@ -237,7 +278,7 @@ export const bloques = [
     colour: 230,
     tooltip: "Declara una variable con var y le asigna un valor.",
     helpUrl: "",
-  },  
+  },
   {
     type: "var_minus",
     message0: "%1 - %2",
@@ -257,7 +298,7 @@ export const bloques = [
     colour: 230,
     tooltip: "Declara una variable con var y le asigna un valor.",
     helpUrl: "",
-  },  
+  },
   {
     type: "go_to_screen",
     message0: "Ir a la pantalla %1",
@@ -273,6 +314,154 @@ export const bloques = [
     helpUrl: "",
     previousStatement: "Action",
     nextStatement: "Action",
+  },
+  {
+    type: "fetch_request_block",
+    message0: "Guardar en %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "VAR_NAME",
+        text: "response",
+      },
+    ],
+    message1: "Hacer petición a %1",
+    args1: [
+      {
+        type: "field_input",
+        name: "URL",
+        text: "https://example.org/post",
+      },
+    ],
+    message2: "Con método %1",
+    args2: [
+      {
+        type: "field_dropdown",
+        name: "METHOD",
+        options: [
+          ["Enviar (POST)", "POST"],
+          ["Recibir (GET)", "GET"],
+        ],
+      },
+    ],
+    message3: "Con tipo de información %1",
+    args3: [
+      {
+        type: "field_dropdown",
+        name: "HEADERS",
+        options: [
+          ["Content-Type: application/json", "application/json"],
+          ["Content-Type: text/plain", "text/plain"],
+        ],
+      },
+    ],
+    message4: "Con informacion a enviar %1",
+    args4: [
+      {
+        type: "input_value",
+        name: "BODY",
+        check: "String",
+      },
+    ],
+    previousStatement: "Action",
+    nextStatement: "Action",
+    colour: 230,
+    tooltip:
+      "Realiza una petición HTTP con el método y los encabezados especificados y guarda la respuesta en una variable.",
+    helpUrl: "",
+  },
+  {
+    type: "parse_json_block",
+    message0: "Guardar información obtenida en %1 desde %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "DATA_VAR",
+        text: "data",
+      },
+      {
+        type: "field_input",
+        name: "RESPONSE_VAR",
+        text: "response",
+      },
+    ],
+    previousStatement: "Action",
+    nextStatement: "Action",
+    colour: 180,
+    tooltip:
+      "Convierte la respuesta de la petición en JSON y la guarda en una variable.",
+    helpUrl: "",
+  },
+  {
+    type: "async_function_block",
+    message0: "función asincrona %1  %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "FUNC_NAME",
+        text: "myFunction",
+      },
+      {
+        type: "input_statement",
+        name: "CODE",
+        check: "Action",
+      },
+    ],
+    output: "Function",
+    colour: 230,
+    tooltip:
+      "Crea una función async con el nombre especificado y el código dentro.",
+    helpUrl: "",
+  },
+  {
+    type: "call_async_function_block",
+    message0: "Ejecutar función %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "FUNC_NAME",
+        text: "myFunction",
+      },
+    ],
+    output: null,
+    previousStatement: "Action",
+    nextStatement: "Action",
+    colour: 230,
+    tooltip: "Ejecuta la función async especificada.",
+    helpUrl: "",
+  },
+  {
+    type: "console_log_block",
+    message0: "Mostrar por consola %1",
+    args0: [
+      {
+        type: "input_value",
+        name: "VALUE",
+        check: "String",
+      },
+    ],
+    previousStatement: "Action",
+    nextStatement: "Action",
+    colour: 160,
+    tooltip: "Muestra un valor en la consola.",
+    helpUrl: "",
+  },
+  {
+    type: "create_image_block",
+    message0: "Crear imagen con fuente %1",
+    args0: [
+      {
+        type: "input_value",
+        name: "SRC",
+        check: "String",
+      },
+    ],
+    previousStatement: "Action",
+    nextStatement: "Action",
+    output: null,
+    colour: 230,
+    tooltip: "Crea un elemento de imagen y asigna su fuente.",
+    helpUrl: "",
   },
   {
     type: "const_use",
