@@ -25,6 +25,8 @@ const BlocklyComponent = ({ onGenerateCode }) => {
               <block type="async_function_block"></block>
               <block type="call_async_function_block"></block>
               <block type="go_to_screen"></block>
+              <block type="json_stringify_variables"></block>
+              <block type="json_variable"></block>
               <block type="append_child_block"></block>
               <block type="change_inner_html"></block>
               <block type="create_image_block"></block>
@@ -189,11 +191,7 @@ const BlocklyComponent = ({ onGenerateCode }) => {
     const method = block.getFieldValue("METHOD"); // Método (GET o POST)
     const headersType = block.getFieldValue("HEADERS"); // Tipo de header
     const body =
-      javascriptGenerator.valueToCode(
-        block,
-        "BODY",
-        javascriptGenerator.ORDER_ATOMIC
-      ) || "null"; // Body del request
+      javascriptGenerator.valueToCode(block, "BODY", Order.NONE) || "null"; // Body del request
 
     // Construcción del objeto de opciones para fetch
     let fetchOptions = `{
@@ -408,6 +406,19 @@ const BlocklyComponent = ({ onGenerateCode }) => {
       Order.ASSIGNMENT
     );
     return `alert(${value});\n`;
+  };
+
+  javascriptGenerator.forBlock["json_stringify_variables"] = function (block) {
+    const variables = javascriptGenerator
+      .statementToCode(block, "VARIABLES")
+      .trim();
+
+    return [`JSON.stringify({ ${variables} })`, Order.NONE];
+  };
+
+  javascriptGenerator.forBlock["json_variable"] = function (block) {
+    const variableName = block.getFieldValue("VAR").trim();
+    return `${variableName},\n`;
   };
 
   javascriptGenerator.forBlock["const_use"] = function (block) {

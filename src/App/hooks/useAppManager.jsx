@@ -124,6 +124,31 @@ const useAppManager = () => {
     });
   };
 
+  const handleSrcImgChange = (newSrc) => {
+    const updateSrcImgRecursively = (elements) =>
+      elements.map((el) => {
+        if (el.id === selectedElement.id) {
+          return {
+            ...el,
+            src: newSrc,
+          };
+        }
+        if (el.children) {
+          return {
+            ...el,
+            children: updateSrcImgRecursively(el.children),
+          };
+        }
+        return el;
+      });
+    const updateSrcImgElement = updateSrcImgRecursively(droppedElements);
+    setDroppedElements(updateSrcImgElement);
+    setSelectedElement({
+      ...selectedElement,
+      src: newSrc,
+    });
+  };
+
   const handleClassChange = (newClass) => {
     const updateClassRecursively = (elements) =>
       elements.map((el) => {
@@ -517,6 +542,7 @@ const useAppManager = () => {
     handlePlaceholderChange,
     handleClassChange,
     handleTypeInputChange,
+    handleSrcImgChange,
     selectedElement,
     setSelectedElement,
     setDroppedElements,

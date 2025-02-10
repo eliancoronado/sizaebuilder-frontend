@@ -34,6 +34,8 @@ import {
 } from "react-icons/md";
 import { BiSolidHide } from "react-icons/bi";
 import useStore from "../store/store";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const RightPanel = ({
   handleStyleChange,
@@ -41,17 +43,36 @@ const RightPanel = ({
   handlePlaceholderChange,
   handleClassChange,
   handleTypeInputChange,
+  handleSrcImgChange,
+  prid,
 }) => {
   const {
+    url,
     projectData: project,
     selectedPage,
     setSelectedPage,
     selectedElement,
   } = useStore(); // Usamos los métodos del store para actualizar el estado
+  const [uploadedImages, setUploadedImages] = useState([]);
 
   const handlePageSelect = (event) => {
     setSelectedPage(event.target.value);
   };
+
+  
+  // Cargar imágenes existentes desde el backend
+  const fetchImages = async () => {
+    try {
+      const response = await axios.get(`${url}/imagesuploaded/${prid}`);
+      setUploadedImages(response.data.images); // Suponiendo que devuelve un array de rutas
+    } catch (error) {
+      console.error("Error al cargar imágenes:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchImages(); // Llamar cuando el componente se monte
+  }, []);
 
   if (!project || !project.pages) {
     return <p>Loading...</p>; // Mostrar mensaje de carga mientras se obtienen los datos
@@ -149,6 +170,26 @@ const RightPanel = ({
                   <option value="file">Archivo</option>
                   <option value="color">Color</option>
                   <option value="submit">Subir</option>
+                </select>
+              </div>
+            )}
+            {selectedElement.src && (
+              <div className="w-full">
+                <h3 className="text-sm text-[#BDBDBD] font-semibold">Imagen</h3>
+                <select
+                  className="w-full h-8 rounded border border-[#828282] bg-transparent text-[#E0E0E0] pl-2 outline-none mt-2"
+                  value={selectedElement.src}
+                  onChange={(e) => handleSrcImgChange(e.target.value)}
+                >
+                  {uploadedImages.map((image, index) => {
+                    if (typeof image !== "string") return null; // Evita errores si no es un string
+                    const imageName = image.split("/").pop(); // Obtiene '1739066926893.png'
+                    return (
+                      <option key={index} value={`${url}${image}`}>
+                        {imageName}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             )}
@@ -394,7 +435,7 @@ const RightPanel = ({
                 }`}
                 onClick={() => handleStyleChange("overflow", "hidden")}
               >
-                <BiSolidHide className="text-xl text-[#C3C3C3]" /> 
+                <BiSolidHide className="text-xl text-[#C3C3C3]" />
                 Ocultar elementos si se salen
               </div>
             </div>

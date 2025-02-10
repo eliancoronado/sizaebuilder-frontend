@@ -8,7 +8,7 @@ import ElementList from "./ElementList";
 import ImageUploader from "./ImageUploader";
 import useStore from "../store/store";
 
-const LeftPanel = () => {
+const LeftPanel = ({prid}) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Obtener estados y setters desde el store
@@ -132,6 +132,7 @@ const LeftPanel = () => {
       )}
       {mode === "files" && (
         <ImageUploader
+        prid={prid}
           imgSelected={imgSelected}
           setImgSelected={setImgSelected}
           url={url}

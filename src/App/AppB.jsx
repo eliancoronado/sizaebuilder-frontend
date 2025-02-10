@@ -32,6 +32,7 @@ const AppB = ({ modeScreen }) => {
     handlePlaceholderChange,
     handleClassChange,
     handleTypeInputChange,
+    handleSrcImgChange,
     renderElement,
     contextMenu,
     setContextMenu,
@@ -265,7 +266,9 @@ const AppB = ({ modeScreen }) => {
             <BlocklyComponent onGenerateCode={handleGenerateCode} />
           ) : (
             <div className="w-full h-full grid grid-cols-4">
-              <LeftPanel />
+              <LeftPanel
+              prid={id}
+              />
               <CentralPanel
                 onUpdate={handlePreviewAndUpdate}
                 onDownload={handleDownload}
@@ -280,6 +283,8 @@ const AppB = ({ modeScreen }) => {
                 handlePlaceholderChange={handlePlaceholderChange}
                 handleClassChange={handleClassChange}
                 handleTypeInputChange={handleTypeInputChange}
+                handleSrcImgChange={handleSrcImgChange}
+                prid={id}
               />
             </div>
           )}

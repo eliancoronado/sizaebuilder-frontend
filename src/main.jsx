@@ -7,7 +7,7 @@ import AppB from "./App/AppB.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Register from "./pages/register/Register.jsx";
 //https://sizaebuilder-backend.onrender.com
-const URL = "http://localhost:4000";
+const URL = "https://sizaebuilder-backend.onrender.com";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

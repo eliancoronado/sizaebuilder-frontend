@@ -15,6 +15,36 @@ export const bloques = [
     extensions: ["dynamic_menu_extension"],
   },
   {
+    type: "json_stringify_variables",
+    message0: "convertir a información [ %1 ]",
+    args0: [
+      {
+        type: "input_statement",
+        name: "VARIABLES",
+      },
+    ],
+    output: "String",
+    colour: 230,
+    tooltip: "Convierte variables a una cadena JSON.",
+    helpUrl: "",
+  },
+  {
+    type: "json_variable",
+    message0: "usar variable %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "VAR",
+        text: "variable",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 180,
+    tooltip: "Añade una variable al objeto JSON.",
+    helpUrl: "",
+  },
+  {
     type: "change_inner_html",
     message0: "cambiar contenido de %1 a %2",
     args0: [
