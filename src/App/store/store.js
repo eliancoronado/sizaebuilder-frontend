@@ -26,7 +26,7 @@ const useStore = create((set) => ({
   selectedPage: "index",
   setSelectedPage: (page) => set({ selectedPage: page }),
   //https://sizaebuilder-backend.onrender.com
-  url: '//https://sizaebuilder-backend.onrender.com', // Puedes configurar esto desde el inicio
+  url: 'https://sizaebuilder-backend.onrender.com', // Puedes configurar esto desde el inicio
 
   draggingElement: null,
   setDraggingElement: (element) => set({ draggingElement: element }),
